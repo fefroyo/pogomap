@@ -110,13 +110,14 @@ var masnou = new L.LayerGroup();
 var mataro = new L.LayerGroup();
 var spawn = new L.LayerGroup();
 
-var calles = L.tileLayer(mbUrl, {id: 'mapbox.streets'}),
+    // L.tileLayer(mbUrl, {id: 'mapbox.streets'}),
+var calles = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {subdomains:['mt0','mt1','mt2','mt3'] }), 
     calles2 = L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png'),
     verde = L.tileLayer('https://api.mapbox.com/styles/v1/poulzinho/ciu2fc21400k32iqi2gkb7h7g/tiles/256/{z}/{x}/{y}?access_token=pk.eyJ1IjoicG91bHppbmhvIiwiYSI6ImNpdTJmMmlwMTAwMHAyeW55NmVpbXpoY3oifQ._S-9Yx6OXlnMMq_MgsodlA'),
     comico = L.tileLayer(comic, {id: 'mapbox.comic'});
   
 map = L.map('map', {
-  layers: [calles2, masnou]
+  layers: [calles, spawn]
 }).setView([41.482539,2.325211], 16);
 if (map.tap) map.tap.disable();
 map._layersMinZoom=5;
