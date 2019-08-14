@@ -87,6 +87,19 @@ var map = L.map('map', {center: [41.48192, 2.32266], zoom: 16}),
 function onLocationError(e) {alert(e.message);}
 map.on('locationerror', onLocationError);
 
+
+var pointA = new L.LatLng(90, 0);
+var pointB = new L.LatLng(-90, 0);
+var pointList = [pointA, pointB];
+var firstpolyline = new L.Polyline(pointList, {
+    color: 'red',
+    weight: 3,
+    opacity: 0.5,
+    smoothFactor: 1
+});
+firstpolyline.addTo(map);
+
+
 // search coordenate
 map.addControl( new L.Control.Search({
   url: 'http://nominatim.openstreetmap.org/search?format=json&q={s}',
