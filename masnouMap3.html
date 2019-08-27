@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="apple-touch-icon" href="./icons/pstop.png">
+<link rel="shortcut icon" href="./icons/pstop.png">
+<!-- Leaflet's CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"/>
+<link rel='stylesheet' href='https://labs.easyblog.it/maps/leaflet-search/src/leaflet-search.css'>
+<!-- Leaflet's JS -->
+<script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
+<script src='https://labs.easyblog.it/maps/leaflet-search/src/leaflet-search.js'></script>
+<!-- extramarkers -->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.10.2/css/all.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-extra-markers@1.0.6/dist/css/leaflet.extra-markers.min.css">
+<style>
+html, body, #map {height:100%;width:100%;padding:0px;margin:0px;}
+.leaflet-popup { width: 201px!important;}
+div#infoboxpic {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background-color: #8bd1e5;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 22px;
+    position: relative;
+    z-index: 8;
+}
+div#infoboxpicin {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-color: #fff;
+    position: relative;
+    top: 5px;
+    left: 5px;
+}
+div#infoboxpicimg {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    position: relative;
+    top: 0px;
+    left: 0px;
+    opacity: .85;
+}
+</style>
+</head>
+
+<body>
+
+	<div id="map"></div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.3.5/tabletop.min.js'></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet-extra-markers@1.0.6/src/assets/js/leaflet.extra-markers.min.js"></script>
+<script>
+var gymsM = new L.LayerGroup();
+var pokestopsM = new L.LayerGroup();
+var nuevas = new L.LayerGroup();
+
+var mapita = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+    subdomains:['mt0','mt1','mt2','mt3']
+});
+
+var lati = '41.482539';
+var logi = '2.3252110';
+
+var map = L.map('map', {
+  layers: [mapita, gymsM]
+}).setView([lati, logi], 15);
+
+var baseMaps = {
+  "Grayscale": mapita
+};
+
+var overlayMaps = {
+    "Gym": gymsM,
+    "Parada": pokestopsM,
+    "nuevas": nuevas
+};
+L.control.layers(baseMaps, overlayMaps).addTo(map);
+
+  // locate mobile-------------------------
+
+map.locate({setView: true, maxZoom: 16});
+
+function onLocationFound(e) {
+
+let iconloc = L.ExtraMarkers.icon({
+    icon: "fa-dice-d6",markerColor: "green",shape: "square", prefix: "fas"
+});
+
+let markloc = L.marker(e.latlng, {icon: iconloc}).addTo(map);
+    markloc.bindPopup("<h3><a href='http://maps.google.com/maps?q=" + e.latlng + "'>AQUI: " + e.latlng + "</a></h3>").openPopup();
+  // L.circle(e.latlng, radius).addTo(map);
+}
+function onLocationError(e) {
+  alert(e.message);
+}
+
+map.on('locationfound', onLocationFound);
+map.on('locationerror', onLocationError);
+
+  // meridiano -------------------
+
+var pointA = new L.LatLng(90, 0);
+var pointB = new L.LatLng(-90, 0);
+var pointList = [pointA, pointB];
+
+var firstpolyline = new L.Polyline(pointList, {
+    color: 'red',
+    weight: 3,
+    opacity: 0.5,
+    smoothFactor: 1
+});
+firstpolyline.addTo(map);
+
+  // paradas y gyms
+
+var code = "1NewJUeqgSRSu4kodHbodlggMjhI-0IYNYX4tJUdO58A";
+        Tabletop.init({
+        key: code,
+        callback: function(sheet, tabletop){            
+          $.each( tabletop.sheets("todas").all(), function(i, gim) {
+        
+        let icon = L.ExtraMarkers.icon({
+          icon: "fa-dice-d6",markerColor: "yellow",shape: "circle", prefix: "fas"
+        });
+        if (gim.iconori === "gym") {
+          icon = L.ExtraMarkers.icon({
+            icon: "fa-egg",markerColor: "red",shape: "circle", prefix: "fas"
+          });
+        };
+        if (gim.iconori === "gymex") {
+          icon = L.ExtraMarkers.icon({
+            icon: "fa-egg",markerColor: "black",shape: "circle", prefix: "fas"
+          });
+        };
+        if (gim.iconori === "pstop") {
+          icon = L.ExtraMarkers.icon({
+            icon: "fa-bullseye",markerColor: "cyan",shape: "circle", prefix: "fas"
+          });
+        };
+        // fa-ethereum - fab
+
+    var loc = [gim["latitude"].replace(',','.'), gim["longitude"].replace(',','.')];
+
+        if (gim.iconori === "gym") {
+          marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(gymsM);  
+          map.addLayer(marker);
+        };
+        if (gim.iconori === "pstop") {
+          marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(pokestopsM);
+          map.addLayer(marker);
+        };
+        if (gim.iconori === "gymex") {
+          marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(nuevas);
+          map.addLayer(marker);
+        };
+
+        marker.bindPopup("<h2><strong style='color: #84b819'>" + gim.nombre + "</strong></h2>" +
+          " <h3><a href='http://maps.google.com/maps?q=" +gim["latitude"]+', '+gim["longitude"]+ "'>" +gim["latitude"]+', '+gim["longitude"]+ "</a></h3>" +
+          "<div id='infoboxpic'><div id='infoboxpicin'><div id='infoboxpicimg' style='background-image: url(" +gim.imagen + ");'></div></div></div>");
+
+            // map.addLayer(marker);
+
+            })
+          },
+          wanted: [ "todas" ],
+          debug: true
+        })
+
+// buscador ___________________
+
+var controlSearch = new L.Control.Search({
+  position:'topleft',
+  //layer: nuevas,
+  layer: L.featureGroup([gymsM, pokestopsM,nuevas]),
+  //propertyName: 'nombre',
+  initial: false,
+  zoom: 16,
+  marker: {
+    // icon: new L.Icon({iconUrl:'icons/pstop1.png', iconSize: [0,0]}),
+    circle: {
+      radius: 60,
+      color: '#0a0',
+      opacity: 1
+    }
+  },
+  textPlaceholder: 'Pokeparada...'
+});
+map.addControl(controlSearch);
+</script>
+</body>
+</html>
