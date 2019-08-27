@@ -43,6 +43,29 @@ map.on('click', function(e) {
       .openOn(map);
 });
 
+	// location
+  // locate mobile-------------------------
+
+map.locate({setView: true, maxZoom: 16});
+
+function onLocationFound(e) {
+
+let iconloc = L.ExtraMarkers.icon({
+    icon: "fa-dice-d6",markerColor: "green",shape: "square", prefix: "fas"
+});
+
+let markloc = L.marker(e.latlng, {icon: iconloc}).addTo(map);
+    markloc.bindPopup("<h3><a href='http://maps.google.com/maps?q=" + e.latlng + "'>AQUI: " + e.latlng + "</a></h3>").openPopup();
+  // L.circle(e.latlng, radius).addTo(map);
+}
+function onLocationError(e) {
+  alert(e.message);
+}
+
+map.on('locationfound', onLocationFound);
+map.on('locationerror', onLocationError);	
+	
+// meridiano
 var pointA = new L.LatLng(90, 0);
 var pointB = new L.LatLng(-90, 0);
 var pointList = [pointA, pointB];
