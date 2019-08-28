@@ -48,6 +48,11 @@ div#infoboxpicimg {
     left: 0px;
     opacity: .85;
 }
+.circleimg {
+  width: 26px;height: 26px;
+  border-radius: 50%;
+  margin-top: 5px;
+}
 </style>
 </head>
 
@@ -70,7 +75,8 @@ var code = "1NewJUeqgSRSu4kodHbodlggMjhI-0IYNYX4tJUdO58A";
         });
         if (gim.iconori === "gym") {
           icon = L.ExtraMarkers.icon({
-            icon: "fa-egg",markerColor: "orange-dark",shape: "circle", prefix: "fas"
+            icon: "fa-number", markerColor: "orange-dark", shape: "circle", number:'A',
+            innerHTML:'<img class="circleimg" src="'+gim.imagen+'">'
           });
         };
         if (gim.iconori === "gymR") {
@@ -85,7 +91,8 @@ var code = "1NewJUeqgSRSu4kodHbodlggMjhI-0IYNYX4tJUdO58A";
         };
         if (gim.iconori === "gymY") {
           icon = L.ExtraMarkers.icon({
-            icon: "fa-egg",markerColor: "yellow",shape: "circle", prefix: "fas"
+            icon: "fa-number", markerColor: "yellow", shape: "circle", number:'A',
+            innerHTML:'<img class="circleimg" src="'+gim.imagen+'">'
           });
         };
         if (gim.iconori === "gymBD") {
@@ -95,7 +102,7 @@ var code = "1NewJUeqgSRSu4kodHbodlggMjhI-0IYNYX4tJUdO58A";
         }; 
         if (gim.iconori === "gymex") {
           icon = L.ExtraMarkers.icon({
-            icon: "fa-egg",markerColor: "black",shape: "circle", prefix: "fas"
+            icon: "fa-number",number:'EX', markerColor: "black",shape: "circle"
           });
         };
         if (gim.iconori === "pstop") {
