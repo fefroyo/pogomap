@@ -66,11 +66,11 @@ var code = "1NewJUeqgSRSu4kodHbodlggMjhI-0IYNYX4tJUdO58A";
           $.each( tabletop.sheets("todas").all(), function(i, gim) {
         
         let icon = L.ExtraMarkers.icon({
-          icon: "fa-dice-d6",markerColor: "yellow",shape: "circle", prefix: "fas"
+          icon: "fa-dice-d6",markerColor: "#3b5998",shape: "circle", prefix: "fas"
         });
         if (gim.iconori === "gym") {
           icon = L.ExtraMarkers.icon({
-            icon: "fa-egg",markerColor: "gray",shape: "circle", prefix: "fas"
+            icon: "fa-egg",markerColor: "white",shape: "circle", prefix: "fas"
           });
         };
         if (gim.iconori === "gymR") {
@@ -88,6 +88,11 @@ var code = "1NewJUeqgSRSu4kodHbodlggMjhI-0IYNYX4tJUdO58A";
             icon: "fa-egg",markerColor: "yellow",shape: "circle", prefix: "fas"
           });
         };
+        if (gim.iconori === "gymBD") {
+          icon = L.ExtraMarkers.icon({
+            icon: "fa-egg",markerColor: "blue-dark",shape: "circle", prefix: "fas"
+          });
+        }; 
         if (gim.iconori === "gymex") {
           icon = L.ExtraMarkers.icon({
             icon: "fa-egg",markerColor: "black",shape: "circle", prefix: "fas"
