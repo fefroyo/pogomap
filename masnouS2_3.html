@@ -75,8 +75,9 @@ var code = "1NewJUeqgSRSu4kodHbodlggMjhI-0IYNYX4tJUdO58A";
         });
         if (gim.iconori === "gym") {
           icon = L.ExtraMarkers.icon({
-            icon: "fa-number", markerColor: "orange-dark", shape: "circle", number:'A',
-            innerHTML:'<img class="circleimg" src="'+gim.imagen+'">'
+            icon: "fa-egg", markerColor: "orange-dark", shape: "circle", prefix: "fas"
+             //icon: "fa-number",number:'A',
+            //innerHTML:'<img class="circleimg" src="'+gim.imagen+'">'
           });
         };
         if (gim.iconori === "gymR") {
@@ -91,8 +92,8 @@ var code = "1NewJUeqgSRSu4kodHbodlggMjhI-0IYNYX4tJUdO58A";
         };
         if (gim.iconori === "gymY") {
           icon = L.ExtraMarkers.icon({
-            icon: "fa-number", markerColor: "yellow", shape: "circle", number:'A',
-            innerHTML:'<img class="circleimg" src="'+gim.imagen+'">'
+            icon: "fa-egg", markerColor: "yellow", shape: "circle", prefix: "fas"
+           // number:'A', innerHTML:'<img class="circleimg" src="'+gim.imagen+'">'
           });
         };
         if (gim.iconori === "gymBD") {
@@ -107,7 +108,8 @@ var code = "1NewJUeqgSRSu4kodHbodlggMjhI-0IYNYX4tJUdO58A";
         };
         if (gim.iconori === "pstop") {
           icon = L.ExtraMarkers.icon({
-            icon: "fa-bullseye",markerColor: "cyan",shape: "circle", prefix: "fas"
+            icon: "fa-bullseye",markerColor: "cyan",shape: "circle", prefix: "fas",
+            innerHTML:'<img class="circleimg" src="./icons/btn_pokestop.png">'
           });
         };
 
