@@ -112,6 +112,12 @@ var code = "1NewJUeqgSRSu4kodHbodlggMjhI-0IYNYX4tJUdO58A";
             innerHTML:'<img class="circleimg" src="./icons/btn_pokestop.png">'
           });
         };
+             
+       if (gim.iconori === "pedida") {
+          icon = L.ExtraMarkers.icon({
+            icon: "fa-number",number:'pstop?', markerColor: "green-light", shape: "star"
+          });
+        };
 
       var loc = [gim["latitude"].replace(',','.'), gim["longitude"].replace(',','.')];
 
