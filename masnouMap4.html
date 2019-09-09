@@ -156,8 +156,6 @@ var overlayMaps = {
 };
 L.control.layers(baseMaps, overlayMaps).addTo(map);
 
-
-
 // cells s2_________________________
 //  var southWest = L.latLng(41.475647, 2.29002),
 //      northEast = L.latLng(41.49214, 2.341046);
@@ -167,8 +165,6 @@ L.control.layers(baseMaps, overlayMaps).addTo(map);
 //var bounds1 = gymsM.getBounds(); // [1]
 //map.fitBounds(gymsM); // [2]
 //map.addLayer(markers);
-
-console.log(gymsM)
 
 // ________________linea diagonal
 
@@ -224,8 +220,7 @@ console.log(gymsM)
 // // showS2Cells(14, {color: 'blue', weight: 3});
 // //showS2Cells(17, {color: 'green'});
 
-
-
+	
 function showS2Cells1(level, style) {
 
   var southWest = L.latLng(41.471877, 2.292791),
@@ -236,8 +231,6 @@ function showS2Cells1(level, style) {
   //const bounds = map.getBounds()
   const size = L.CRS.Earth.distance(bounds.getSouthWest(), bounds.getNorthEast()) / 10000 + 1 | 0
   const count = 2 ** level * size >> 11
-
-  console.log(bounds)
 
   function addPoly(cell) {
     const vertices = cell.getCornerLatLngs()
@@ -411,7 +404,7 @@ var code = "1NewJUeqgSRSu4kodHbodlggMjhI-0IYNYX4tJUdO58A";
         if (gim.iconori === "pstop") {
           icon = L.ExtraMarkers.icon({
             icon: "fa-bullseye",markerColor: "cyan",shape: "circle", prefix: "fas",
-            innerHTML:'<img class="circleimg" src="./portals/pstop3.png">'
+            innerHTML:'<img class="circleimg" src="./icons/pstop3.png">'
           });
         };
         if (gim.iconori === "pedida") {
