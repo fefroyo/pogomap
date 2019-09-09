@@ -70,8 +70,10 @@ var code = "1NewJUeqgSRSu4kodHbodlggMjhI-0IYNYX4tJUdO58A";
           $.each( tabletop.sheets("todas").all(), function(i, gim) {
         
         let icon = L.ExtraMarkers.icon({
-          icon: "fa-dice-d6",markerColor: "white",shape: "circle", prefix: "fas"
+          icon: "fa-dice-d6",markerColor: "white",shape: "circle", prefix: "fas",
+          innerHTML:'<img class="circleimg" src="./icons/pstop3.png">'
         });
+             
         if (gim.iconori === "gym") {
           icon = L.ExtraMarkers.icon({
             icon: "fa-egg", markerColor: "orange-dark", shape: "circle", prefix: "fas"
@@ -108,25 +110,23 @@ var code = "1NewJUeqgSRSu4kodHbodlggMjhI-0IYNYX4tJUdO58A";
         if (gim.iconori === "pstop") {
           icon = L.ExtraMarkers.icon({
             icon: "fa-bullseye",markerColor: "cyan",shape: "circle", prefix: "fas",
-            innerHTML:'<img class="circleimg" src="./icons/btn_pokestop.png">'
+            innerHTML:'<img class="circleimg" src="./icons/pstop3.png">'
           });
         };
              
        if (gim.iconori === "pedida") {
           icon = L.ExtraMarkers.icon({
-            icon: "fa-number",number:'P/G?', markerColor: "green-light", shape: "square"
+            icon: "fa-number",number:'Eh?', markerColor: "green-light", shape: "square"
           });
         };
 
       var loc = [gim["latitude"].replace(',','.'), gim["longitude"].replace(',','.')];
-
               marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon} );
               marker.bindPopup("<h2><strong style='color: #84b819'>" + gim.nombre + "</strong></h2>" +
           " <h3><a href='http://maps.google.com/maps?q=" +gim["latitude"]+', '+gim["longitude"]+ "'>" +gim["latitude"]+', '+gim["longitude"]+ "</a></h3>" +
           "<div id='infoboxpic'><div id='infoboxpicin'><div id='infoboxpicimg' style='background-image: url(" +gim.imagen + ");'></div></div></div>");
 
               map.addLayer(marker);
-
             })
           },
           wanted: [ "todas" ],
