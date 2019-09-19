@@ -144,8 +144,8 @@ var baseMaps = {
   "Calles": calles,
   "Hibrido": hibrido,
   "Satelite": satelit,
-  "Terreno": terreno,
-  "Trafico": trafico
+  //"Terreno": terreno,
+  //"Trafico": trafico
 };
 
 var overlayMaps = {
@@ -256,26 +256,27 @@ function showS2Cells1(level, style) {
     steps++
   } while (steps < count)
 }
-showS2Cells1(17, {color: '#999', weight: 2});
+//showS2Cells1(17, {color: '#999', weight: 2});
 showS2Cells1(14, {color: 'red', weight: 3});
 
 
 
 map.on('dragend', function onDragEnd(){
 
-    var width = map.getBounds().getEast() - map.getBounds().getWest();
-    var height = map.getBounds().getNorth() - map.getBounds().getSouth();
+  //  var width = map.getBounds().getEast() - map.getBounds().getWest();
+  //  var height = map.getBounds().getNorth() - map.getBounds().getSouth();
     //var diago = bounds.getSouthWest(), bounds.getNorthEast();
 
   //const size = L.CRS.Earth.distance(bounds.getSouthWest(), bounds.getNorthEast()) / 4000 + 1 | 0
   //const count = 2 ** level * size >> 11
 
-    console.log (
+//    console.log (
         //'center:' + map.getCenter() +'\n'+
-        'SW:' + map.getBounds().getSouthWest() +'\n'+
-        'NE:' + map.getBounds().getNorthEast() +'\n'
+//     'SW:' + map.getBounds().getSouthWest() +'\n'+
+//     'NE:' + map.getBounds().getNorthEast() +'\n'
         //'size in pixels:' + map.getSize())
-    )
+  //  )
+
 });
 
 // center:LatLng(41.483894, 2.315533)
@@ -480,10 +481,8 @@ map.on('click', function(e){
   var popup = L.popup().setLatLng(e.latlng)
       .setContent("Lat: " + lat[1] + "<br>Long:" + lng[0]+
        "<br>Coords: "+ e.latlng.lat.toFixed(5)+","+e.latlng.lng.toFixed(5)
-        )
-      .openOn(map);
+      ).openOn(map);
 });
-
 
 
 // var s2Geometry = require("s2-geometry")
@@ -522,7 +521,6 @@ let markloc = L.marker(e.latlng, {icon: iconloc}).addTo(map);
 function onLocationError(e) {
   alert(e.message);
 }
-
 map.on('locationfound', onLocationFound);
 map.on('locationerror', onLocationError);
 </script>
