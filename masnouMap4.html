@@ -55,6 +55,9 @@ div#infoboxpicimg {
   border-radius: 50%;
   margin-top: 8px;
 }
+.pokenido {
+  width: 35px;height: 35px;
+}	
 
 /* pokemon icon img */
 .displaypokemon {
@@ -84,10 +87,26 @@ div#infoboxpicimg {
     padding: 0;
     color: white;
     width: 100px;
-
-    margin-top: 35px;
+/* margin-top: 35px; */
     margin-left: -87.5%;
 }.pokemonDescription {visibility: hidden;}
+
+.remainingtext1{
+    border-radius: 25px;
+    background-color: black;
+    text-align: center;
+    background-color: rgba(100, 100, 100, 0.7);
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+    color: white;
+    width: 100px;
+    margin-top: 35px;
+    margin-left: -87.5%;
+}
+.extra-marker-square-transparent {
+    background: url() no-repeat 0 0!important;
+}	
 </style>
 </head>
 
@@ -104,6 +123,7 @@ var gymsM = new L.LayerGroup();
 var pokestopsM = new L.LayerGroup();
 var nuevas = new L.LayerGroup();
 var pedidas = new L.LayerGroup();
+var nidos = new L.LayerGroup();	
 
 var calles = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
     subdomains:['mt0','mt1','mt2','mt3']
@@ -152,7 +172,8 @@ var overlayMaps = {
     "Gym": gymsM,
     "Parada": pokestopsM,
     "EXgym": nuevas,
-    "pedir": pedidas
+    "Pokenido": nidos,	
+    "pedir/pendiente": pedidas
 };
 L.control.layers(baseMaps, overlayMaps).addTo(map);
 
@@ -368,7 +389,7 @@ function calculateRemainingTime(element) {
       var ms = ("0" + minutes).slice(-2);
       var sd = ("0" + seconds).slice(-2);
 
-     // $(".remainingtext").html(ds+ "d " +hr+ "h " +ms+ ":" +sd);
+     $(".remainingtext").html(ds+ "d " +hr+ "h " +ms+ ":" +sd);
     } else { return; }
   }
 }
@@ -390,7 +411,7 @@ var code = "1NewJUeqgSRSu4kodHbodlggMjhI-0IYNYX4tJUdO58A";
           $.each( tabletop.sheets("todas").all(), function(i, gim) {
         
         let icon = L.ExtraMarkers.icon({
-          icon: "fa-dice-d6",markerColor: "yellow",shape: "circle", prefix: "fas"
+          icon: "fa-number",number:'X',markerColor: "white",iconColor: 'black',shape: "circle"
         });
         if (gim.iconori === "gym") {
           icon = L.ExtraMarkers.icon({
@@ -414,6 +435,19 @@ var code = "1NewJUeqgSRSu4kodHbodlggMjhI-0IYNYX4tJUdO58A";
             innerHTML:'<div class="remainingtext" id="expire" data-expire="123456">Pedida</div>'
           });
         };
+	if (gim.iconori === "pedir") {
+          icon = L.ExtraMarkers.icon({
+            icon: "fa-number",number:'P?', markerColor: "orange-dark", shape: "square",
+            innerHTML:'<div class="remainingtext1" id="expire" data-expire="123456">por pedir</div>'
+          });
+        };
+        if (gim.iconori === "poke") {
+          icon = L.ExtraMarkers.icon({
+            icon: "",number:'P',markerColor: "transparent",shape: "square",prefix: "fa",
+            innerHTML:'<img class="pokenido" src="http://www.serebii.net/pokemongo/pokemon/'+gim.icon+'.png" />' +
+            '<div class="remainingtext" id="expire" data-expire="123456"></div>'
+          });
+        };	  
         // fa-ethereum - fab
 
     var loc = [gim["latitude"].replace(',','.'), gim["longitude"].replace(',','.')];
@@ -437,7 +471,14 @@ var code = "1NewJUeqgSRSu4kodHbodlggMjhI-0IYNYX4tJUdO58A";
           marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(pedidas);
           map.addLayer(marker);
         };
-
+	if (gim.iconori === "pedir") {
+          marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(pedidas);
+          map.addLayer(marker);
+        };
+        if (gim.iconori === "poke") {
+          marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(nidos);
+          map.addLayer(marker);
+        };
         marker.bindPopup("<h2><strong style='color: #84b819'>" + gim.nombre + "</strong></h2>" +
           " <h3><a href='http://maps.google.com/maps?q=" +gim["latitude"]+', '+gim["longitude"]+ "'>" +gim["latitude"]+', '+gim["longitude"]+ "</a></h3>" +
           "<div id='infoboxpic'><div id='infoboxpicin'><div id='infoboxpicimg' style='background-image: url(" +gim.imagen + ");'></div></div></div>");
@@ -513,14 +554,11 @@ function onLocationFound(e) {
 let iconloc = L.ExtraMarkers.icon({
     icon: "fa-dice-d6",markerColor: "green",shape: "square", prefix: "fas"
 });
-
-let markloc = L.marker(e.latlng, {icon: iconloc}).addTo(map);
-    markloc.bindPopup("<h3><a href='http://maps.google.com/maps?q=" + e.latlng + "'>AQUI: " + e.latlng + "</a></h3>").openPopup();
-  // L.circle(e.latlng, radius).addTo(map);
+//let markloc = L.marker(e.latlng, {icon: iconloc}).addTo(map);
+  //  markloc.bindPopup("<h3><a href='http://maps.google.com/maps?q=" + e.latlng + "'>AQUI: " + e.latlng + "</a></h3>").openPopup();
+   L.circle(e.latlng, 5).addTo(map);
 }
-function onLocationError(e) {
-  alert(e.message);
-}
+function onLocationError(e) {alert(e.message);}
 map.on('locationfound', onLocationFound);
 map.on('locationerror', onLocationError);
 </script>
