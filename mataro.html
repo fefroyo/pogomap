@@ -164,7 +164,7 @@ Tabletop.init({
         if (gim.iconori === "pstop") {
           icon = L.ExtraMarkers.icon({
             icon: "fa-bullseye",markerColor: "cyan",shape: "circle", prefix: "fas",
-            innerHTML:'<img class="circleimg" src="./portals/pstop3.png">'
+            innerHTML:'<img class="circleimg" src="./icons/pstop3.png">'
           });
         };
         if (gim.iconori === "pedida") {
@@ -229,7 +229,7 @@ Tabletop.init({
           map.addLayer(marker);
         };
 
-        marker.bindPopup("<h2><strong style='color: #84b819'>" + nidito.nombre + "</strong></h2>" +
+        marker.bindPopup("<h2>Nido de: <strong style='color: #84b819'>" + nidito.nombre + "</strong> #"+nidito.icon+"</h2>" +
           " <h3><a href='http://maps.google.com/maps?q=" +nidito["latitude"]+', '+nidito["longitude"]+ "'>" +nidito["latitude"]+', '+nidito["longitude"]+ "</a></h3>" +
           "<div id='infoboxpic'><div id='infoboxpicin'><div id='infoboxpicimg' style='background-image: url(" +nidito.imagen + ");'></div></div></div>");
       
