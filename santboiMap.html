@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="apple-touch-icon" href="./icons/pstop.png">
+<link rel="shortcut icon" href="./icons/pstop.png">
+<!-- Leaflet's CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"/>
+<link rel='stylesheet' href='https://labs.easyblog.it/maps/leaflet-search/src/leaflet-search.css'>
+<!-- Leaflet's JS -->
+<script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
+<script src='https://labs.easyblog.it/maps/leaflet-search/src/leaflet-search.js'></script>
+<!-- extramarkers -->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.10.2/css/all.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-extra-markers@1.0.6/dist/css/leaflet.extra-markers.min.css">
+<style>
+html, body, #map {height:100%;width:100%;padding:0px;margin:0px;}
+.leaflet-popup { width: 201px!important;}
+div#infoboxpic {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background-color: #8bd1e5;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 22px;
+    position: relative;
+    z-index: 8;
+}
+div#infoboxpicin {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-color: #fff;
+    position: relative;
+    top: 5px;
+    left: 5px;
+}
+div#infoboxpicimg {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    position: relative;
+    top: 0px;
+    left: 0px;
+    opacity: .85;
+}
+.circleimg {
+  width: 20px;height: 20px;
+  border-radius: 50%;
+  margin-top: 8px;
+}
+.pokenido {
+  width: 35px;height: 35px;
+}	
+/* pokemon icon img */
+.displaypokemon {
+    position: absolute;
+    left: -50px;
+    top: -25px;
+    width: 100px;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+.pokeimg> img {
+    padding-top: 5px;
+    margin: 0;
+    max-width: 50px;
+    min-height: 25px;
+    max-height: 50px;
+}
+/* contador de tiempo */
+.remainingtext, .pokemonDescription{
+    border-radius: 25px;
+    background-color: black;
+    text-align: center;
+    background-color: rgba(100, 100, 100, 0.7);
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+    color: white;
+    width: 100px;
+/* margin-top: 35px; */
+    margin-left: -87.5%;
+}.pokemonDescription {visibility: hidden;}
+.remainingtext1{
+    border-radius: 25px;
+    background-color: black;
+    text-align: center;
+    background-color: rgba(100, 100, 100, 0.7);
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+    color: white;
+    width: 100px;
+    margin-top: 35px;
+    margin-left: -87.5%;
+}
+.extra-marker-square-transparent {
+    background: url() no-repeat 0 0!important;
+}	
+</style>
+</head>
+
+<body>
+
+	<div id="map"></div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.3.5/tabletop.min.js'></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet-extra-markers@1.0.6/src/assets/js/leaflet.extra-markers.min.js"></script>
+<script src="https://unpkg.com/s2-geometry"></script>
+<script>
+var gymsM = new L.LayerGroup();
+var pokestopsM = new L.LayerGroup();
+var nuevas = new L.LayerGroup();
+var pedidas = new L.LayerGroup();
+var nidos = new L.LayerGroup();	
+var calles = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+    subdomains:['mt0','mt1','mt2','mt3']
+});
+var hibrido = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+    subdomains:['mt0','mt1','mt2','mt3']
+});
+var satelit = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+    subdomains:['mt0','mt1','mt2','mt3']
+});
+var terreno = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
+    subdomains:['mt0','mt1','mt2','mt3']
+});
+var trafico = L.tileLayer('https://{s}.google.com/vt/lyrs=m@221097413,traffic&x={x}&y={y}&z={z}', {
+    subdomains:['mt0','mt1','mt2','mt3']
+});
+// googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}'
+// googleHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}'
+// googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}'
+// googleTerrain = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}'
+// googleTraffic = L.tileLayer('https://{s}.google.com/vt/lyrs=m@221097413,traffic&x={x}&y={y}&z={z}'
+// Note the difference in the "lyrs" parameter in the URL:
+// Hybrid: s,h;
+// Satellite: s;
+// Streets: m;
+// Terrain: p;
+var lati = '41.34428';
+var logi = '2.04157';
+var map = L.map('map', {
+  layers: [calles, gymsM]
+}).setView([lati, logi], 15);
+var baseMaps = {
+  "Calles": calles,
+  "Hibrido": hibrido,
+  "Satelite": satelit,
+};
+var overlayMaps = {
+    "Gym": gymsM,
+    "Parada": pokestopsM,
+    "EXgym": nuevas,
+    "Pokenido": nidos,	
+    "pedir/pendiente": pedidas
+};
+L.control.layers(baseMaps, overlayMaps).addTo(map);
+	
+// function showS2Cells1(level, style) {
+//   var southWest = L.latLng(41.471877, 2.292791),
+//       northEast = L.latLng(41.50988,2.33512);
+//  const bounds = L.latLngBounds(southWest, northEast);
+//   const size = L.CRS.Earth.distance(bounds.getSouthWest(), bounds.getNorthEast()) / 10000 + 1 | 0
+//   const count = 2 ** level * size >> 11
+//   function addPoly(cell) {
+//     const vertices = cell.getCornerLatLngs()
+//     const poly = L.polygon(vertices,
+//       Object.assign({color: 'orange', opacity: 0.5, weight: 1, fillOpacity: 0.0}, style))
+//     poly.addTo(map);
+//   }
+//   // add cells spiraling outward
+//   let cell = S2.S2Cell.FromLatLng(bounds.getCenter(), level)
+//   let steps = 1
+//   let direction = 0
+//   do {
+//     for (let i = 0; i < 2; i++) {
+//       for (let i = 0; i < steps; i++) {
+//         addPoly(cell)
+//         cell = cell.getNeighbors()[direction % 4]
+//       }
+//       direction++
+//     }
+//     steps++
+//   } while (steps < count)
+// }
+//showS2Cells1(17, {color: '#999', weight: 2});
+//showS2Cells1(14, {color: 'red', weight: 3});
+
+map.on('dragend', function onDragEnd(){
+  //  var width = map.getBounds().getEast() - map.getBounds().getWest();
+  //  var height = map.getBounds().getNorth() - map.getBounds().getSouth();
+    //var diago = bounds.getSouthWest(), bounds.getNorthEast();
+  //const size = L.CRS.Earth.distance(bounds.getSouthWest(), bounds.getNorthEast()) / 4000 + 1 | 0
+  //const count = 2 ** level * size >> 11
+//    console.log (
+        //'center:' + map.getCenter() +'\n'+
+//     'SW:' + map.getBounds().getSouthWest() +'\n'+
+//     'NE:' + map.getBounds().getNorthEast() +'\n'
+        //'size in pixels:' + map.getSize())
+  //  )
+});
+
+  // meridiano -------------------
+var pointA = new L.LatLng(90, 0);
+var pointB = new L.LatLng(-90, 0);
+var pointList = [pointA, pointB];
+var firstpolyline = new L.Polyline(pointList, {
+    color: 'red',
+    weight: 3,
+    opacity: 0.5,
+    smoothFactor: 1
+});
+firstpolyline.addTo(map);
+  //  tiempo remaining
+// time nidos dias ---------------------
+var deadline = 'Oct 5 2017 0:00:00 GMT';
+if (deadline == '') { deadline = base_deadline; }
+var date_clock = get_recurring_week_day_v2(deadline, 2);
+var timee = Date.parse(date_clock);
+// time nidos---------------------
+// Nidos Remaining______________________
+function getTimeRemaining(endtime){
+          var t = Date.parse(endtime) - Date.parse(new Date());
+          var seconds = Math.floor( (t/1000) % 60 );
+          var minutes = Math.floor( (t/1000/60) % 60 );
+          var hours = Math.floor( (t/(1000*60*60)) % 24 );
+          var days = Math.floor( t/(1000*60*60*24) );
+          return {
+            'total': t,
+            'days': days,
+            'hours': hours,
+            'minutes': minutes,
+            'seconds': seconds
+          };
+        }
+function get_recurring_week_day_v2(start_day, week_skip, count_today) {
+  var input_date = new Date(start_day); //alert(input_date);
+  var today = new Date(); //alert(today); //Get todays date
+  var days = (week_skip * 7);
+  var temp_date = new Date(input_date);
+  temp_date.setDate(temp_date.getDate() + days); //alert(temp_date);
+  while (temp_date < today) { 
+    temp_date.setDate(temp_date.getDate() + days);
+  }
+  return temp_date;
+}
+function calculateRemainingTime(element) {
+  let days, hours, minutes, seconds;
+  
+  element = new Date(element).getTime();
+  
+  if (isNaN(element)) { return; }
+  
+  setInterval(calculate, 1000);
+  
+  function calculate() {
+    let startDate = new Date();
+    startDate = startDate.getTime();
+    
+    let timeRemaining = parseInt((element - startDate) / 1000);
+    
+    if (timeRemaining >= 0) {
+      days = parseInt(timeRemaining / 86400);
+      timeRemaining = (timeRemaining % 86400);
+      
+      hours = parseInt(timeRemaining / 3600);
+      timeRemaining = (timeRemaining % 3600);
+      
+      minutes = parseInt(timeRemaining / 60);
+      timeRemaining = (timeRemaining % 60);
+      
+      seconds = parseInt(timeRemaining);
+      var ds = parseInt(days, 10);
+      var hr = ("0" + hours).slice(-2);
+      var ms = ("0" + minutes).slice(-2);
+      var sd = ("0" + seconds).slice(-2);
+     $(".remainingtext").html(ds+ "d " +hr+ "h " +ms+ ":" +sd);
+    } else { return; }
+  }
+}
+function updateTime() {
+    //deleteDespawnedPokemon();
+    $(".remainingtext, .remainingtext-tooltip").each(function() {
+        calculateRemainingTime(date_clock);
+    });
+}
+setInterval(updateTime, 1000);
+  // paradas y gyms
+
+//https://docs.google.com/spreadsheets/d/1tDAnoGoM8VOrjnw_6SAxYr8Br6eg-ShDaiVoxE_Bk9Q/edit?usp=sharing  
+var code = "1tDAnoGoM8VOrjnw_6SAxYr8Br6eg-ShDaiVoxE_Bk9Q";
+        Tabletop.init({
+        key: code,
+        callback: function(sheet, tabletop){            
+          $.each( tabletop.sheets("santboi1").all(), function(i, gim) {
+        
+        let icon = L.ExtraMarkers.icon({
+          icon: "fa-number",number:'X',markerColor: "white",iconColor: 'black',shape: "circle"
+        });
+        if (gim.iconori === "gym") {
+          icon = L.ExtraMarkers.icon({
+            icon: "fa-egg",markerColor: "red",shape: "circle", prefix: "fas"
+          });
+        };
+        if (gim.iconori === "gymex") {
+          icon = L.ExtraMarkers.icon({
+            icon: "fa-egg",markerColor: "black",shape: "circle", prefix: "fas"
+          });
+        };
+        if (gim.iconori === "pstop") {
+          icon = L.ExtraMarkers.icon({
+            icon: "fa-bullseye",markerColor: "cyan",shape: "circle", prefix: "fas",
+            innerHTML:'<img class="circleimg" src="./icons/pstop3.png">'
+          });
+        };
+        if (gim.iconori === "pedida") {
+          icon = L.ExtraMarkers.icon({
+            icon: "fa-number",number:'P?', markerColor: "green-light", shape: "square",
+            innerHTML:'<div class="remainingtext1" id="expire" data-expire="123456">Pedida</div>'
+          });
+        };
+	if (gim.iconori === "pedir") {
+          icon = L.ExtraMarkers.icon({
+            icon: "fa-number",number:'P?', markerColor: "orange-dark", shape: "square",
+            innerHTML:'<div class="remainingtext1" id="expire" data-expire="123456">por pedir</div>'
+          });
+        };
+        if (gim.iconori === "poke") {
+          icon = L.ExtraMarkers.icon({
+            icon: "",number:'P',markerColor: "transparent",shape: "square",prefix: "fa",
+            innerHTML:'<img class="pokenido" src="http://www.serebii.net/pokemongo/pokemon/'+gim.icon+'.png" />' +
+            '<div class="remainingtext" id="expire" data-expire="123456"></div>'
+          });
+        };	  
+        // fa-ethereum - fab
+    var loc = [gim["latitude"].replace(',','.'), gim["longitude"].replace(',','.')];
+        if (gim.iconori === "gym") {
+          marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(gymsM);  
+          map.addLayer(marker);
+          // var bounds = marker.getBounds(); // [1]
+          // map.fitBounds(bounds);
+          // map.fitBounds(bounds).addLayer(marker);
+        };
+        if (gim.iconori === "pstop") {
+          marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(pokestopsM);
+          map.addLayer(marker);
+        };
+        if (gim.iconori === "gymex") {
+          marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(nuevas);
+          map.addLayer(marker);
+        };
+        if (gim.iconori === "pedida") {
+          marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(pedidas);
+          map.addLayer(marker);
+        };
+	if (gim.iconori === "pedir") {
+          marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(pedidas);
+          map.addLayer(marker);
+        };
+        if (gim.iconori === "poke") {
+          marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(nidos);
+          map.addLayer(marker);
+        };
+        marker.bindPopup("<h2><strong style='color: #84b819'>" + gim.nombre + "</strong></h2>" +
+          " <h3><a href='http://maps.google.com/maps?q=" +gim["latitude"]+', '+gim["longitude"]+ "'>" +gim["latitude"]+', '+gim["longitude"]+ "</a></h3>" +
+          "<div id='infoboxpic'><div id='infoboxpicin'><div id='infoboxpicimg' style='background-image: url(" +gim.imagen + ");'></div></div></div>");
+            // map.addLayer(marker);
+            })
+          },
+          wanted: [ "santboi1" ],
+          debug: true
+        })
+// buscador ___________________
+var controlSearch = new L.Control.Search({
+  position:'topleft',
+  //layer: nuevas,
+  layer: L.featureGroup([gymsM, pokestopsM,nuevas]),
+  //propertyName: 'nombre',
+  initial: false,
+  zoom: 16,
+  marker: {
+    // icon: new L.Icon({iconUrl:'icons/pstop1.png', iconSize: [0,0]}),
+    circle: {
+      radius: 60,
+      color: '#0a0',
+      opacity: 1
+    }
+  },
+  textPlaceholder: 'Pokeparada...'
+});
+map.addControl(controlSearch);
+// map click coords
+map.on('click', function(e){
+  var coord = e.latlng.toString().split(',');
+  var lat = coord[0].split('(');
+  var lng = coord[1].split(')');
+  //console.log("Aqui: " + lat[1] + "," + lng[0]);
+  var popup = L.popup().setLatLng(e.latlng)
+      .setContent("Lat: " + lat[1] + "<br>Long:" + lng[0]+
+       "<br>Coords: "+ e.latlng.lat.toFixed(5)+","+e.latlng.lng.toFixed(5)
+      ).openOn(map);
+});
+  
+  // locate mobile-------------------------
+// map.locate({setView: true, maxZoom: 16});
+// function onLocationFound(e) {
+// let iconloc = L.ExtraMarkers.icon({
+//     icon: "fa-dice-d6",markerColor: "green",shape: "square", prefix: "fas"
+// });
+//    L.circle(e.latlng, 5).addTo(map);
+// }
+// function onLocationError(e) {alert(e.message);}
+// map.on('locationfound', onLocationFound);
+// map.on('locationerror', onLocationError);
+</script>
+</body>
+</html>
