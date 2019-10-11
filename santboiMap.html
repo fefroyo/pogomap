@@ -196,18 +196,18 @@ L.control.layers(baseMaps, overlayMaps).addTo(map);
 //showS2Cells1(17, {color: '#999', weight: 2});
 //showS2Cells1(14, {color: 'red', weight: 3});
 
-map.on('dragend', function onDragEnd(){
-  //  var width = map.getBounds().getEast() - map.getBounds().getWest();
-  //  var height = map.getBounds().getNorth() - map.getBounds().getSouth();
-    //var diago = bounds.getSouthWest(), bounds.getNorthEast();
-  //const size = L.CRS.Earth.distance(bounds.getSouthWest(), bounds.getNorthEast()) / 4000 + 1 | 0
-  //const count = 2 ** level * size >> 11
-//    console.log (
-        //'center:' + map.getCenter() +'\n'+
-//     'SW:' + map.getBounds().getSouthWest() +'\n'+
-//     'NE:' + map.getBounds().getNorthEast() +'\n'
-        //'size in pixels:' + map.getSize())
-  //  )
+let person = L.ExtraMarkers.icon({
+	icon: "fa-number", number:'A', iconColor: 'white',markerColor: "black",shape: "star",
+});  
+var myMarker = new L.marker([lati,logi] , {icon:person, draggable: true}).addTo(map)
+myMarker.on('drag', function(e) {
+
+	var coord = e.latlng.toString().split(',');
+	var lat = coord[0].split('(');
+	var lng = coord[1].split(')');
+
+myMarker.bindPopup("<b>Lat: </b>" + lat[1]+"<br><b>Long: </b>" +lng[0]+
+	"<br><b>Coords:</b> "+ e.latlng.lat.toFixed(5)+","+e.latlng.lng.toFixed(5)).openPopup();
 });
 
   // meridiano -------------------
@@ -347,9 +347,6 @@ var code = "1tDAnoGoM8VOrjnw_6SAxYr8Br6eg-ShDaiVoxE_Bk9Q";
         if (gim.iconori === "gym") {
           marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(gymsM);  
           map.addLayer(marker);
-          // var bounds = marker.getBounds(); // [1]
-          // map.fitBounds(bounds);
-          // map.fitBounds(bounds).addLayer(marker);
         };
         if (gim.iconori === "pstop") {
           marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(pokestopsM);
@@ -400,16 +397,16 @@ var controlSearch = new L.Control.Search({
 });
 map.addControl(controlSearch);
 // map click coords
-map.on('click', function(e){
-  var coord = e.latlng.toString().split(',');
-  var lat = coord[0].split('(');
-  var lng = coord[1].split(')');
-  //console.log("Aqui: " + lat[1] + "," + lng[0]);
-  var popup = L.popup().setLatLng(e.latlng)
-      .setContent("Lat: " + lat[1] + "<br>Long:" + lng[0]+
-       "<br>Coords: "+ e.latlng.lat.toFixed(5)+","+e.latlng.lng.toFixed(5)
-      ).openOn(map);
-});
+//map.on('click', function(e){
+//  var coord = e.latlng.toString().split(',');
+//  var lat = coord[0].split('(');
+//  var lng = coord[1].split(')');
+//  //console.log("Aqui: " + lat[1] + "," + lng[0]);
+//  var popup = L.popup().setLatLng(e.latlng)
+//      .setContent("Lat: " + lat[1] + "<br>Long:" + lng[0]+
+//       "<br>Coords: "+ e.latlng.lat.toFixed(5)+","+e.latlng.lng.toFixed(5)
+//      ).openOn(map);
+//});
   
   // locate mobile-------------------------
 // map.locate({setView: true, maxZoom: 16});
