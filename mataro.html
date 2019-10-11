@@ -256,8 +256,87 @@ var controlSearch = new L.Control.Search({
 });
 map.addControl(controlSearch);
 
-  // locate mobile-------------------------
+// time nidos dias ---------------------
+var deadline = 'Oct 5 2017 0:00:00 GMT';
+if (deadline == '') { deadline = base_deadline; }
+var date_clock = get_recurring_week_day_v2(deadline, 2);
+var timee = Date.parse(date_clock);
+// time nidos---------------------
+// Nidos Remaining______________________
+function getTimeRemaining(endtime){
+          var t = Date.parse(endtime) - Date.parse(new Date());
+          var seconds = Math.floor( (t/1000) % 60 );
+          var minutes = Math.floor( (t/1000/60) % 60 );
+          var hours = Math.floor( (t/(1000*60*60)) % 24 );
+          var days = Math.floor( t/(1000*60*60*24) );
+          return {
+            'total': t,
+            'days': days,
+            'hours': hours,
+            'minutes': minutes,
+            'seconds': seconds
+          };
+        }
+function get_recurring_week_day_v2(start_day, week_skip, count_today) {
 
+  var input_date = new Date(start_day); //alert(input_date);
+  var today = new Date(); //alert(today); //Get todays date
+
+  var days = (week_skip * 7);
+  var temp_date = new Date(input_date);
+  temp_date.setDate(temp_date.getDate() + days); //alert(temp_date);
+  while (temp_date < today) { 
+    temp_date.setDate(temp_date.getDate() + days);
+  }
+  return temp_date;
+}
+
+function calculateRemainingTime(element) {
+  let days, hours, minutes, seconds;
+  
+  element = new Date(element).getTime();
+  
+  if (isNaN(element)) { return; }
+  
+  setInterval(calculate, 1000);
+  
+  function calculate() {
+
+    let startDate = new Date();
+    startDate = startDate.getTime();
+    
+    let timeRemaining = parseInt((element - startDate) / 1000);
+    
+    if (timeRemaining >= 0) {
+      days = parseInt(timeRemaining / 86400);
+      timeRemaining = (timeRemaining % 86400);
+      
+      hours = parseInt(timeRemaining / 3600);
+      timeRemaining = (timeRemaining % 3600);
+      
+      minutes = parseInt(timeRemaining / 60);
+      timeRemaining = (timeRemaining % 60);
+      
+      seconds = parseInt(timeRemaining);
+
+      var ds = parseInt(days, 10);
+      var hr = ("0" + hours).slice(-2);
+      var ms = ("0" + minutes).slice(-2);
+      var sd = ("0" + seconds).slice(-2);
+
+      $(".remainingtext").html(ds+ "d " +hr+ "h " +ms+ ":" +sd);
+    } else { return; }
+  }
+}
+function updateTime() {
+    //deleteDespawnedPokemon();
+    $(".remainingtext, .remainingtext-tooltip").each(function() {
+        calculateRemainingTime(date_clock);
+    });
+}
+setInterval(updateTime, 1000);
+    
+  // ****** locate mobile-------------------------
 // map.locate({setView: true, maxZoom: 16});
 // function onLocationFound(e) {
 
