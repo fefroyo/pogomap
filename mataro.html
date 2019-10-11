@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta charset="UTF-8">
+<title>Pogomapa Mataró</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" href="./icons/pstop.png">
+    <link rel="shortcut icon" href="./icons/pstop.png">
+<link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/leaflet.css'>
+<link rel='stylesheet' href='https://labs.easyblog.it/maps/leaflet-search/src/leaflet-search.css'>
+<link rel="stylesheet" href="./css/style.css">
+<!-- extramarkers -->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.10.2/css/all.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-extra-markers@1.0.6/dist/css/leaflet.extra-markers.min.css">
+<style>
+.circleimg {
+  width: 20px;height: 20px;
+  border-radius: 50%;
+  margin-top: 8px;
+}
+.pokenido {
+  width: 35px;height: 35px;
+}
+.extra-marker-square-transparent {
+    background: url() no-repeat 0 0!important;
+}
+</style>
+</head>
+
+<body>
+
+  <div id="map"></div>
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/leaflet.js'></script>
+<script src='https://labs.easyblog.it/maps/leaflet-search/src/leaflet-search.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.3.5/tabletop.min.js'></script>
+<!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/(1.5.1 -1.3.5/tabletop.min.js'></script> -->
+<script src="https://cdn.jsdelivr.net/npm/leaflet-extra-markers@1.0.6/src/assets/js/leaflet.extra-markers.min.js"></script>
+<script>
+//https://pkmref.com/images/set_1/608.png
+
+// https://github.com/jsoma/tabletop
+// https://labs.easyblog.it/maps/leaflet-search/
+// https://journocode.com/2017/02/20/javascript-interactive-map-with-search-bar-leaflet/
+var gymsM = new L.LayerGroup(),
+  pokestopsM = new L.LayerGroup(),
+  gymEX = new L.LayerGroup(),
+  nidos = new L.LayerGroup();
+
+var calles = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+    subdomains:['mt0','mt1','mt2','mt3']
+});
+var hibrido = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+    subdomains:['mt0','mt1','mt2','mt3']
+});
+var satelit = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+    subdomains:['mt0','mt1','mt2','mt3']
+});
+var terreno = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
+    subdomains:['mt0','mt1','mt2','mt3']
+});
+var trafico = L.tileLayer('https://{s}.google.com/vt/lyrs=m@221097413,traffic&x={x}&y={y}&z={z}', {
+    subdomains:['mt0','mt1','mt2','mt3']
+});
+
+var lati = '41.539188';
+var logi = '2.444976';
+
+var map = L.map('map', {
+  layers: [calles]
+}).setView([lati, logi], 15);
+
+var baseMaps = {
+  "Calles": calles,
+  "Hibrido": hibrido,
+  "Satelite": satelit,
+  // "Terreno": terreno,
+  // "Trafico": trafico
+  // "Gym": gymsM,
+  // "Parada": pokestopsM,
+  // "EXgym": gymEX,
+};
+var overlayMaps = {
+    "Gym": gymsM,
+    "Parada": pokestopsM,
+    "EXgym": gymEX,
+    "Nidos": nidos
+};
+
+// L.control.layers(baseMaps,{
+//   position: 'topright', // 'topleft', 'bottomleft', 'bottomright'
+//   collapsed: false // true
+// }).addTo(map);
+L.control.layers(baseMaps,overlayMaps).addTo(map);
+//L.control.layers(overlayMaps,null).addTo(map);
+
+  // marcador punto ***************
+
+  let person = L.ExtraMarkers.icon({
+      icon: "fa-number", number:'A', iconColor: 'white',markerColor: "black",shape: "star",
+  });  
+  var myMarker = new L.marker([lati,logi] , {icon:person, draggable: true}).addTo(map)
+  // var myMarker = L.marker([lati,logi] , {icon:person, draggable: true}).addTo(map).on('dragend', function(e) {
+      
+  //     // var coord = e.latlng.toString().split(',');
+  //     // var lat = coord[0].split('(');
+  //     // var lng = coord[1].split(')');
+
+  //     //myMarker.bindPopup("<b>Lat: </b>"+lati+"<br><b>Long: </b>"+logi+
+  //      //"<br><b>Coords:</b> "+ lati+","+logi).openPopup();
+  //     myMarker.bindPopup("<b>Lat: </b>" + e.latlng.lat.toFixed(5)+"<br><b>Long: </b>" +e.latlng.lng.toFixed(5)+
+  //      "<br><b>Coords:</b> "+ e.latlng.lat.toFixed(5)+","+e.latlng.lng.toFixed(5)).openPopup();
+  // });
+
+  myMarker.on('drag', function(e) {
+    
+    var coord = e.latlng.toString().split(',');
+    var lat = coord[0].split('(');
+    var lng = coord[1].split(')');
+    
+    myMarker.bindPopup("<b>Lat: </b>" + lat[1]+"<br><b>Long: </b>" +lng[0]+
+       "<br><b>Coords:</b> "+ e.latlng.lat.toFixed(5)+","+e.latlng.lng.toFixed(5)).openPopup();
+  });
+
+
+  // meridiano -------------------
+
+var pointA = new L.LatLng(90, 0);
+var pointB = new L.LatLng(-90, 0);
+var pointList = [pointA, pointB];
+
+var firstpolyline = new L.Polyline(pointList, {
+    color: 'red',
+    weight: 3,
+    opacity: 0.5,
+    smoothFactor: 1
+});
+firstpolyline.addTo(map);
+
+
+// https://docs.google.com/spreadsheets/d/1n4hEyFDWXq3EL94SuplnsEQSX2ADuFtGTbVSIYNHVGw/pub?output=html
+var code = "1n4hEyFDWXq3EL94SuplnsEQSX2ADuFtGTbVSIYNHVGw"
+Tabletop.init({
+  key: code,
+  callback: function(sheet, tabletop){
+    
+    $.each( tabletop.sheets("gyms_pokestopsMataro").all(), function(i, gim) {
+
+          let icon = L.ExtraMarkers.icon({
+            icon: "fa-number",iconColor: 'black',markerColor: "white",shape: "star",
+          });
+
+          if (gim.iconori === "gym") {
+          icon = L.ExtraMarkers.icon({
+            icon: "fa-egg",markerColor: "red",shape: "circle", prefix: "fas"
+          });
+        };
+        if (gim.iconori === "gymex") {
+          icon = L.ExtraMarkers.icon({
+            icon: "fa-egg",markerColor: "black",shape: "circle", prefix: "fas"
+          });
+        };
+        if (gim.iconori === "pstop") {
+          icon = L.ExtraMarkers.icon({
+            icon: "fa-bullseye",markerColor: "cyan",shape: "circle", prefix: "fas",
+            innerHTML:'<img class="circleimg" src="./portals/pstop3.png">'
+          });
+        };
+        if (gim.iconori === "pedida") {
+          icon = L.ExtraMarkers.icon({
+            icon: "fa-number",number:'P?', markerColor: "green-light", shape: "square",
+            innerHTML:'<div class="remainingtext1" id="expire" data-expire="123456">'
+                      +texto+'</div>'
+          });
+        };
+        if (gim.iconori === "pedir") {
+          icon = L.ExtraMarkers.icon({
+            icon: "fa-number",number:'P?', markerColor: "orange-dark", shape: "square",
+            innerHTML:'<div class="remainingtext1" id="expire" data-expire="123456">por pedir</div>'
+          });
+        };
+        
+
+      var loc = [gim["latitude"].replace(',','.'), gim["longitude"].replace(',','.')];
+
+        if (gim.iconori === "gym") {
+          marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(gymsM);  
+          map.addLayer(marker);
+        };
+        if (gim.iconori === "pstop") {
+          marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(pokestopsM);
+          //map.addLayer(marker);
+        };
+        if (gim.iconori === "gymex") {
+          marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(gymEX);
+          map.addLayer(marker);
+        };
+        if (gim.iconori === "pedida") {
+          marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(pedidas);
+          map.addLayer(marker);
+        };
+        if (gim.iconori === "pedir") {
+          marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(pedidas);
+          map.addLayer(marker);
+        };
+     
+
+
+        marker.bindPopup("<h2><strong style='color: #84b819'>" + gim.nombre + "</strong></h2>" +
+          " <h3><a href='http://maps.google.com/maps?q=" +gim["latitude"]+', '+gim["longitude"]+ "'>" +gim["latitude"]+', '+gim["longitude"]+ "</a></h3>" +
+          "<div id='infoboxpic'><div id='infoboxpicin'><div id='infoboxpicimg' style='background-image: url(" +gim.imagen + ");'></div></div></div>");
+    })
+
+    $.each( tabletop.sheets("nidosMataro").all(), function(i, nidito) {
+
+        if (nidito.iconori === "poke") {
+          icon = L.ExtraMarkers.icon({
+            icon: "",number:'P',markerColor: "transparent",shape: "square",prefix: "fa",
+            innerHTML:'<img class="pokenido" src="http://www.serebii.net/pokemongo/pokemon/'+nidito.icon+'.png" />' +
+            '<div class="remainingtext" id="expire" data-expire="123456"></div>'
+          });
+        };
+    
+      var loc = [nidito["latitude"].replace(',','.'), nidito["longitude"].replace(',','.')];
+
+        if (nidito.iconori === "poke") {
+          marker = new L.Marker(new L.latLng(loc), {title: nidito.nombre, icon: icon}).addTo(nidos);
+          map.addLayer(marker);
+        };
+
+        marker.bindPopup("<h2><strong style='color: #84b819'>" + nidito.nombre + "</strong></h2>" +
+          " <h3><a href='http://maps.google.com/maps?q=" +nidito["latitude"]+', '+nidito["longitude"]+ "'>" +nidito["latitude"]+', '+nidito["longitude"]+ "</a></h3>" +
+          "<div id='infoboxpic'><div id='infoboxpicin'><div id='infoboxpicimg' style='background-image: url(" +nidito.imagen + ");'></div></div></div>");
+      
+    })
+
+  },
+  wanted: [ "gyms_pokestopsMataro", "nidosMataro" ],
+  debug: true
+})
+
+var controlSearch = new L.Control.Search({
+  position:'topleft',
+  layer: L.featureGroup([gymsM,pokestopsM,gymEX]),
+  initial: false,
+  zoom: 16,
+  marker: {
+    circle: {
+      radius: 60,
+      color: '#0a0',
+      opacity: 1
+    }
+  },
+  textPlaceholder: 'Pokeparada...'
+});
+map.addControl(controlSearch);
+
+  // locate mobile-------------------------
+
+// map.locate({setView: true, maxZoom: 16});
+// function onLocationFound(e) {
+
+//   let iconloc = L.ExtraMarkers.icon({
+//       icon: "fa-dice-d6",markerColor: "blue",shape: "square", prefix: "fas"
+//   });
+
+//   let person = L.ExtraMarkers.icon({
+//       icon: "fa-number", number:'A', iconColor: 'white',markerColor: "black",shape: "star",
+//   });
+
+//   var coord = e.latlng.toString().split(',');
+//   var lat = coord[0].split('(');
+//   var lng = coord[1].split(')');
+//   var myMarker = L.marker(e.latlng, {title: "Coordinates",alt: "Coordinates", 
+//                  icon:person, 
+//                  draggable: true}).addTo(map).on('dragend', function() {
+//     myMarker.bindPopup("<b>Lat:</b> " + lat[1] + "<br><b>Long:</b>" + lng[0]+
+//        "<br><b>Coords:</b> "+ e.latlng.lat.toFixed(5)+","+e.latlng.lng.toFixed(5)).openPopup();
+//   });
+// }
+// function onLocationError(e) {alert(e.message);}
+// map.on('locationfound', onLocationFound);
+//map.on('locationerror', onLocationError);
+</script>
+</body>
+</html>
