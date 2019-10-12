@@ -30,8 +30,8 @@
 <script src='https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.3.5/tabletop.min.js'></script>
 <script src="https://cdn.jsdelivr.net/npm/leaflet-extra-markers@1.0.6/src/assets/js/leaflet.extra-markers.min.js"></script>
 <script>
-var lati = '41.482539'; // mataro 41.539188,2.444976 - masnou 41.482539, 2.325211
-var logi = '2.325211';
+var lati = '41.48258'; // mataro 41.539188,2.444976 - masnou 41.482539, 2.325211
+var logi = '2.32115';
 
 var southWest = L.latLng(lati, logi),
     northEast = L.latLng(lati, logi);
@@ -146,6 +146,21 @@ function showS2Cells(level, style, showNames) {
     showS2Cells(14, {color: 'red', weight: 3});
     showS2Cells(17, {color: 'blue'});
 
+// icono coords dragable	
+let person = L.ExtraMarkers.icon({
+  icon: "fa-number", number:'O', iconColor: 'white',markerColor: "black",shape: "square",
+});  
+var myMarker = new L.marker([lati,logi] , {icon:person, draggable: true}).addTo(mapi)
+
+myMarker.on('drag', function(e) {
+    
+  var coord = e.latlng.toString().split(',');
+  var lat = coord[0].split('(');
+  var lng = coord[1].split(')');
+    
+myMarker.bindPopup("<b>Lat: </b>" + lat[1]+"<br><b>Long: </b>" +lng[0]+
+       "<br><b>Coords:</b> "+ e.latlng.lat.toFixed(5)+","+e.latlng.lng.toFixed(5)).openPopup();
+});	
 </script>
 </body>
 </html>
