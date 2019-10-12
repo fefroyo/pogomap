@@ -137,8 +137,8 @@ var code = "1NewJUeqgSRSu4kodHbodlggMjhI-0IYNYX4tJUdO58A";
 let person = L.ExtraMarkers.icon({
   icon: "fa-number", number:'O', iconColor: 'white',markerColor: "black",shape: "square",
 });  
-var myMarker = new L.marker([lati,logi] , {icon:person, draggable: true}).addTo(map)
-myMarker.on('drag', function(e) {
+var myMarker = new L.marker([41.48258,2.32115] , {icon:person, draggable: true}).addTo(map)
+   myMarker.on('drag', function(e) {
     
   var coord = e.latlng.toString().split(',');
   var lat = coord[0].split('(');
