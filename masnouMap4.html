@@ -280,7 +280,20 @@ function showS2Cells1(level, style) {
 //showS2Cells1(17, {color: '#999', weight: 2});
 showS2Cells1(14, {color: 'red', weight: 3});
 
+let person = L.ExtraMarkers.icon({
+	icon: "fa-number", number:'A', iconColor: 'white',markerColor: "black",shape: "star",
+});  
+var myMarker = new L.marker([lati,logi] , {icon:person, draggable: true}).addTo(map)
 
+myMarker.on('drag', function(e) {
+
+	var coord = e.latlng.toString().split(',');
+	var lat = coord[0].split('(');
+	var lng = coord[1].split(')');
+
+myMarker.bindPopup("<b>Lat: </b>" + lat[1]+"<br><b>Long: </b>" +lng[0]+
+"<br><b>Coords:</b> "+ e.latlng.lat.toFixed(5)+","+e.latlng.lng.toFixed(5)).openPopup();
+});
 
 map.on('dragend', function onDragEnd(){
 
@@ -514,16 +527,16 @@ map.addControl(controlSearch);
 
 // map click coords
 
-map.on('click', function(e){
-  var coord = e.latlng.toString().split(',');
-  var lat = coord[0].split('(');
-  var lng = coord[1].split(')');
-  //console.log("Aqui: " + lat[1] + "," + lng[0]);
-  var popup = L.popup().setLatLng(e.latlng)
-      .setContent("Lat: " + lat[1] + "<br>Long:" + lng[0]+
-       "<br>Coords: "+ e.latlng.lat.toFixed(5)+","+e.latlng.lng.toFixed(5)
-      ).openOn(map);
-});
+//map.on('click', function(e){
+//  var coord = e.latlng.toString().split(',');
+//  var lat = coord[0].split('(');
+//  var lng = coord[1].split(')');
+//  //console.log("Aqui: " + lat[1] + "," + lng[0]);
+//  var popup = L.popup().setLatLng(e.latlng)
+//      .setContent("Lat: " + lat[1] + "<br>Long:" + lng[0]+
+//       "<br>Coords: "+ e.latlng.lat.toFixed(5)+","+e.latlng.lng.toFixed(5)
+//      ).openOn(map);
+//});
 
 
 // var s2Geometry = require("s2-geometry")
@@ -546,17 +559,16 @@ map.on('click', function(e){
 
   
   // locate mobile-------------------------
-
 map.locate({setView: true, maxZoom: 16});
 
 function onLocationFound(e) {
 
-let iconloc = L.ExtraMarkers.icon({
-    icon: "fa-dice-d6",markerColor: "green",shape: "square", prefix: "fas"
-});
+//let iconloc = L.ExtraMarkers.icon({
+//    icon: "fa-dice-d6",markerColor: "green",shape: "square", prefix: "fas"
+//});
 //let markloc = L.marker(e.latlng, {icon: iconloc}).addTo(map);
   //  markloc.bindPopup("<h3><a href='http://maps.google.com/maps?q=" + e.latlng + "'>AQUI: " + e.latlng + "</a></h3>").openPopup();
-   L.circle(e.latlng, 5).addTo(map);
+   L.circle(e.latlng, 10).addTo(map);
 }
 function onLocationError(e) {alert(e.message);}
 map.on('locationfound', onLocationFound);
