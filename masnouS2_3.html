@@ -127,17 +127,12 @@ var code = "1NewJUeqgSRSu4kodHbodlggMjhI-0IYNYX4tJUdO58A";
           "<div id='infoboxpic'><div id='infoboxpicin'><div id='infoboxpicimg' style='background-image: url(" +gim.imagen + ");'></div></div></div>");
 
               map.addLayer(marker);
-            })
-          },
-          wanted: [ "todas" ],
-          debug: true
-        })
-   
-// icono coords dragable	
+             
+             // icono coords dragable	
 let person = L.ExtraMarkers.icon({
   icon: "fa-number", number:'O', iconColor: 'white',markerColor: "black",shape: "square",
 });  
-var myMarker = new L.marker([41.48258,2.32115] , {icon:person, draggable: true})
+var myMarker = new L.marker([41.48258,2.32115], {icon:person, draggable: true})
    map.addLayer(myMarker);  
 myMarker.on('drag', function(e) {
     
@@ -147,7 +142,15 @@ myMarker.on('drag', function(e) {
     
 myMarker.bindPopup("<b>Lat: </b>" + lat[1]+"<br><b>Long: </b>" +lng[0]+
        "<br><b>Coords:</b> "+ e.latlng.lat.toFixed(5)+","+e.latlng.lng.toFixed(5)).openPopup();
-});   
+});  
+// fin dragable icon
+             
+             
+            })
+          },
+          wanted: [ "todas" ],
+          debug: true
+})
 </script>
 </body>
 </html>
