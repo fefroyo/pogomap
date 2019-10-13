@@ -118,18 +118,27 @@ div#infoboxpicimg {
 <script src='https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.3.5/tabletop.min.js'></script>
 <script src="https://cdn.jsdelivr.net/npm/leaflet-extra-markers@1.0.6/src/assets/js/leaflet.extra-markers.min.js"></script>
 <script>
+var lati = '41.482539';
+var logi = '2.3252110';
+let ZoomMax = 22;
+	
 var gymsM = new L.LayerGroup();
 var pokestopsM = new L.LayerGroup();
 var nuevas = new L.LayerGroup();
 var pedidas = new L.LayerGroup();
 var nidos = new L.LayerGroup();	
+	
+var map = L.map('map', {
+  maxZoom: ZoomMax,
+  layers: [gymsM]
+}).setView([lati, logi], 15);	
 
 var calles = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-    subdomains:['mt0','mt1','mt2','mt3']
-});
+    subdomains:['mt0','mt1','mt2','mt3'], maxZoom: ZoomMax
+}).addTo(map);
 var hibrido = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
-    subdomains:['mt0','mt1','mt2','mt3']
-});
+    subdomains:['mt0','mt1','mt2','mt3'], maxZoom: ZoomMax
+}).addTo(map);
 var satelit = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
     subdomains:['mt0','mt1','mt2','mt3']
 });
@@ -152,19 +161,10 @@ var trafico = L.tileLayer('https://{s}.google.com/vt/lyrs=m@221097413,traffic&x=
 // Streets: m;
 // Terrain: p;
 
-var lati = '41.482539';
-var logi = '2.3252110';
-let ZoomMax = 22;	
-
-var map = L.map('map', {
-  maxZoom: ZoomMax,
-  layers: [calles, gymsM]
-}).setView([lati, logi], 15);
-
 var baseMaps = {
   "Calles": calles,
   "Hibrido": hibrido,
-  "Satelite": satelit,
+  //"Satelite": satelit,
   //"Terreno": terreno,
   //"Trafico": trafico
 };
@@ -182,9 +182,9 @@ L.control.layers(baseMaps, overlayMaps).addTo(map);
 const updateTiles = () => {
   const zoom = map.getZoom();
   if (zoom >= 17) calles.setOpacity(1 - (zoom - 17) / 5)
-  else satelit.setOpacity(1);
-  if (zoom <= ZoomMax) satelit.setOpacity(1 - (ZoomMax - zoom) / 4)
-  else satelit.setOpacity(1);
+  else hibrido.setOpacity(1);
+  if (zoom <= ZoomMax) hibrido.setOpacity(1 - (ZoomMax - zoom) / 4)
+  else hibrido.setOpacity(1);
 };
 map.on('zoomend', updateTiles);
 ///////////////////////////////
