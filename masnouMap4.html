@@ -422,20 +422,34 @@ var code = "1NewJUeqgSRSu4kodHbodlggMjhI-0IYNYX4tJUdO58A";
 	if (gim.iconori === "pedir") {
           marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(pedidas);
           map.addLayer(marker);
-        };
-        if (gim.iconori === "poke") {
-          marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(nidos);
-          map.addLayer(marker);
-        };
+        };      
         marker.bindPopup("<h2><strong style='color: #84b819'>" + gim.nombre + "</strong></h2>" +
           " <h3><a href='http://maps.google.com/maps?q=" +gim["latitude"]+', '+gim["longitude"]+ "'>" +gim["latitude"]+', '+gim["longitude"]+ "</a></h3>" +
           "<div id='infoboxpic'><div id='infoboxpicin'><div id='infoboxpicimg' style='background-image: url(" +gim.imagen + ");'></div></div></div>");
-
             // map.addLayer(marker);
-
             })
+	// NIDOS ------------------	
+	$.each( tabletop.sheets("nidosMasnou").all(), function(i, nidito) {
+        if (nidito.iconori === "poke") {
+          icon = L.ExtraMarkers.icon({
+            icon: "",number:'P',markerColor: "transparent",shape: "square",prefix: "fa",
+            innerHTML:'<img class="pokenido" src="https://pkmref.com/images/set_1/'+nidito.icon+'.png" />' +
+            '<div class="remainingtext" id="expire" data-expire="123456"></div>'
+          });
+        };
+    
+      var loc = [nidito["latitude"].replace(',','.'), nidito["longitude"].replace(',','.')];
+        if (nidito.iconori === "poke") {
+          marker = new L.Marker(new L.latLng(loc), {title: nidito.nombre, icon: icon}).addTo(nidos);
+          map.addLayer(marker);
+        };
+        marker.bindPopup("<h2>Nido de: <strong style='color: #84b819'>" + nidito.nombre + "</strong> #"+nidito.icon+"</h2>" +
+          " <h3><a href='http://maps.google.com/maps?q=" +nidito["latitude"]+', '+nidito["longitude"]+ "'>" +nidito["latitude"]+', '+nidito["longitude"]+ "</a></h3>" +
+          "<div id='infoboxpic'><div id='infoboxpicin'><div id='infoboxpicimg' style='background-image: url(https://pkmref.com/images/set_1/"+nidito.imagen+".png);'></div></div></div>");
+      
+    })	
           },
-          wanted: [ "todas" ],
+          wanted: [ "todas", "nidosMasnou" ],
           debug: true
         })
 
