@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="es">
 <head>
    <meta charset="UTF-8">
@@ -15,6 +14,7 @@
 <!-- extramarkers -->
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.10.2/css/all.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-extra-markers@1.0.6/dist/css/leaflet.extra-markers.min.css">
+<script src="https://unpkg.com/s2-geometry" crossorigin></script>
 <style>
 html, body, #map {height:100%;width:100%;padding:0px;margin:0px;}
 .leaflet-popup { width: 201px!important;}
@@ -117,7 +117,6 @@ div#infoboxpicimg {
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.3.5/tabletop.min.js'></script>
 <script src="https://cdn.jsdelivr.net/npm/leaflet-extra-markers@1.0.6/src/assets/js/leaflet.extra-markers.min.js"></script>
-<script src="https://unpkg.com/s2-geometry"></script>
 <script>
 var gymsM = new L.LayerGroup();
 var pokestopsM = new L.LayerGroup();
@@ -155,8 +154,10 @@ var trafico = L.tileLayer('https://{s}.google.com/vt/lyrs=m@221097413,traffic&x=
 
 var lati = '41.482539';
 var logi = '2.3252110';
+let ZoomMax = 22;	
 
 var map = L.map('map', {
+  maxZoom: ZoomMax,
   layers: [calles, gymsM]
 }).setView([lati, logi], 15);
 
@@ -177,132 +178,80 @@ var overlayMaps = {
 };
 L.control.layers(baseMaps, overlayMaps).addTo(map);
 
-// cells s2_________________________
-//  var southWest = L.latLng(41.475647, 2.29002),
-//      northEast = L.latLng(41.49214, 2.341046);
-// //bounds = L.latLngBounds(southWest, northEast);
-// const bounds = L.latLngBounds(southWest, northEast);
+// Visusalizacion de mapa segun zoom
+const updateTiles = () => {
+  const zoom = map.getZoom();
+  if (zoom >= 17) calles.setOpacity(1 - (zoom - 17) / 5)
+  else satelit.setOpacity(1);
+  if (zoom <= ZoomMax) satelit.setOpacity(1 - (ZoomMax - zoom) / 4)
+  else satelit.setOpacity(1);
+};
+map.on('zoomend', updateTiles);
+///////////////////////////////
 
-//var bounds1 = gymsM.getBounds(); // [1]
-//map.fitBounds(gymsM); // [2]
-//map.addLayer(markers);
-
-// ________________linea diagonal
-
-// var pointC = new L.LatLng(41.501027, 2.32554);
-// var pointD = new L.LatLng(41.471877, 2.292791);
-// var pointList1 = [pointC, pointD];
-
-// var firstpolyline1 = new L.Polyline(pointList1, {
-//     color: 'red',
-//     weight: 3,
-//     opacity: 0.5,
-//     smoothFactor: 1
-// });
-// firstpolyline1.addTo(map);
-
-// ________________fin Linea diagonal
-
-
-// function showS2Cells(level, style, showNames) {
-
-//         const size = L.CRS.Earth.distance(bounds.getSouthWest(), bounds.getNorthEast()) / 10000 + 1|0; //10000
-//         const count = 2 ** level * size >> 11; // 11
-
-//         console.log(size+" - "+count)
-
-//         function addPoly(cell) {
-//             const shape = showNames ? "polygon" : "polyline";
-//             const vertices = cell.getCornerLatLngs();
-//             if (shape === "polyline") vertices.push(vertices[0]);
-//             const poly = L[shape](vertices,
-//                 Object.assign({color: 'blue', opacity: 0.5, weight: 1, fillOpacity: 0.0}, style));
-//             // Object.assign({color: 'blue', opacity: 0.3, weight: 2, fillOpacity: 0.0}, style));
-//             if (showNames && cells) poly.bindTooltip(cellName(cell));
-//             poly.addTo(map);
-//         }
-
-//         // add cells spiraling outward
-//         let cell = S2.S2Cell.FromLatLng(bounds.getCenter(), level);
-//         let steps = 1;
-//         let direction = 0;
-//         do {
-//             for (let i = 0; i < 2; i++) { 
-//                 for (let i = 0; i < steps; i++) {
-//                     addPoly(cell);
-//                     cell = cell.getNeighbors()[direction % 4];
-//                 }
-//                 direction++;
-//             }
-//             steps++;
-//         } while (steps < count);
-// }
-// // showS2Cells(17, {color: 'DarkOrange', weight: 2, opacity: 0.5})
-// // showS2Cells(14, {color: 'blue', weight: 3});
-// //showS2Cells(17, {color: 'green'});
-
-	
-function showS2Cells1(level, style) {
-
-  var southWest = L.latLng(41.471877, 2.292791),
-      northEast = L.latLng(41.50988,2.33512);
- const bounds = L.latLngBounds(southWest, northEast);
-
-  // Credit goes to the PMSF project
-  //const bounds = map.getBounds()
-  const size = L.CRS.Earth.distance(bounds.getSouthWest(), bounds.getNorthEast()) / 10000 + 1 | 0
-  const count = 2 ** level * size >> 11
-
-  function addPoly(cell) {
-    const vertices = cell.getCornerLatLngs()
-    const poly = L.polygon(vertices,
-      Object.assign({color: 'orange', opacity: 0.5, weight: 1, fillOpacity: 0.0}, style))
-    // if (cell.level === 15) {
-    //   viewCellLayer.addLayer(poly)
-    // } 
-    poly.addTo(map);
-  }
-  // add cells spiraling outward
-  let cell = S2.S2Cell.FromLatLng(bounds.getCenter(), level)
-  let steps = 1
-  let direction = 0
-  do {
-    for (let i = 0; i < 2; i++) {
-      for (let i = 0; i < steps; i++) {
-        addPoly(cell)
-        cell = cell.getNeighbors()[direction % 4]
-      }
-      direction++
+let regionLayer;
+const updateMapGrid = () => {
+  regionLayer.clearLayers();
+  const bounds = map.getBounds();
+  const seenCells = {};
+  const levels = {
+    17: {
+      color: 'blue',
+      opacity: 0.8,
+      weight: 1,
+        },
+    14: {
+      color: 'red',
+      opacity: 0.6,
+      weight: 3,
+        },
+      };
+  const drawCell = (cell, options) => {
+    // corner points
+    const corners = cell.getCornerLatLngs();
+    // the level 6 cells have noticible errors with non-geodesic lines - and the larger level 4 cells are worse
+    // NOTE: we only draw two of the edges. as we draw all cells on screen, the other two edges will either be drawn
+    // from the other cell, or be off screen so we don't care
+    const region = L.polyline([corners[0], corners[1], corners[2]], {
+      fill: false,
+      clickable: false,
+      options,
+    });
+    regionLayer.addLayer(region);
+  };
+  const drawCellAndNeighbors = (cell, options) => {
+    const cellStr = cell.toString();
+    if (!seenCells[cellStr]) {
+      // cell not visited - flag it as visited now
+      seenCells[cellStr] = true;
+      // is it on the screen?
+      const corners = cell.getCornerLatLngs();
+      const cellBounds = L.latLngBounds([corners[0], corners[1]]).extend(corners[2]).extend(corners[3]);
+      if (cellBounds.intersects(bounds)) {
+        // on screen - draw it
+        drawCell(cell, options);
+        // and recurse to our neighbors
+        const neighbors = cell.getNeighbors();
+        for (let i = 0; i < neighbors.length; i++) {
+          drawCellAndNeighbors(neighbors[i], options);
+        };
+      };
+    };
+  };
+// center cell
+  const zoom = map.getZoom();
+  Object.keys(levels).forEach(level => {
+    const options = levels[level];
+    if (level == 14 && zoom >= 15 ) {
+     const cell = S2.S2Cell.FromLatLng(map.getCenter(), level);
+     drawCellAndNeighbors(cell, options);
     }
-    steps++
-  } while (steps < count)
-}
-//showS2Cells1(17, {color: '#999', weight: 2});
-showS2Cells1(14, {color: 'red', weight: 3});
-
-
-//map.on('dragend', function onDragEnd(){
-
-  //  var width = map.getBounds().getEast() - map.getBounds().getWest();
-  //  var height = map.getBounds().getNorth() - map.getBounds().getSouth();
-    //var diago = bounds.getSouthWest(), bounds.getNorthEast();
-
-  //const size = L.CRS.Earth.distance(bounds.getSouthWest(), bounds.getNorthEast()) / 4000 + 1 | 0
-  //const count = 2 ** level * size >> 11
-
-//    console.log (
-        //'center:' + map.getCenter() +'\n'+
-//     'SW:' + map.getBounds().getSouthWest() +'\n'+
-//     'NE:' + map.getBounds().getNorthEast() +'\n'
-        //'size in pixels:' + map.getSize())
-  //  )
-
-//});
-
-// center:LatLng(41.483894, 2.315533)
-// size:LatLng(41.475647, 2.29002)
-// contador:LatLng(41.49214, 2.341046)
-// size in pixels:Point(1189, 513)
+    else if (level == 17 && zoom >= 17 ) {
+      const cell = S2.S2Cell.FromLatLng(map.getCenter(), level);
+      drawCellAndNeighbors(cell, options);
+    };
+  });
+};	
 
   // meridiano -------------------
 
@@ -524,33 +473,13 @@ map.addControl(controlSearch);
 //      ).openOn(map);
 //});
 
-
-// var s2Geometry = require("s2-geometry")
-// var S2 = require('s2-geometry').S2;
- 
-// var lat = 1.2345678; //your lat in decimal degree
-// var lng = 9.8765432; //your long in decimal degree
-// var level = 17;
-
-// // 
-// // Convert from Lat / Lng 
-// // 
-// var key = S2.latLngToKey(lat, lng, level);
-
-// S2Cell1 = S2.S2Cell.FromHilbertQuadKey(key);
-// // S2.S2Cell.prototype.getCornerLatLngs();
-
-// S2Cell1.getCornerLatLngs();
-
-
-  
+	
   // locate mobile-------------------------
 map.locate({setView: true, maxZoom: 16});
-
 function onLocationFound(e) {
 	
 let person = L.ExtraMarkers.icon({
-	icon: "fa-number", number:'O', iconColor: 'white', markerColor: "red", shape: "square",
+  icon: "fa-number", number:'O', iconColor: 'white', markerColor: "red", shape: "square",
 });  
 var myMarker = new L.marker(e.latlng, {icon:person, draggable: true}).addTo(map)
 
@@ -564,17 +493,16 @@ myMarker.bindPopup("<b>Lat: </b>" + lat[1]+"<br><b>Long: </b>" +lng[0]+
 "<br><b>Coords:</b> "+ e.latlng.lat.toFixed(5)+","+e.latlng.lng.toFixed(5)).openPopup();
 });
 	
-
-//let iconloc = L.ExtraMarkers.icon({
-//    icon: "fa-dice-d6",markerColor: "green",shape: "square", prefix: "fas"
-//});
-//let markloc = L.marker(e.latlng, {icon: iconloc}).addTo(map);
-  //  markloc.bindPopup("<h3><a href='http://maps.google.com/maps?q=" + e.latlng + "'>AQUI: " + e.latlng + "</a></h3>").openPopup();
- //  L.circle(e.latlng, 10).addTo(map);
 }
 function onLocationError(e) {alert(e.message);}
 map.on('locationfound', onLocationFound);
 map.on('locationerror', onLocationError);
+	
+regionLayer = L.layerGroup();
+map.addLayer(regionLayer);
+map.on('moveend', updateMapGrid);
+updateTiles();
+updateMapGrid();	
 </script>
 </body>
 </html>
