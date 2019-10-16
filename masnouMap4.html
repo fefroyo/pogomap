@@ -138,15 +138,15 @@ var calles = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
 var hibrido = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
     subdomains:['mt0','mt1','mt2','mt3'], maxZoom: ZoomMax
 }).addTo(map);
-var satelit = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
-    subdomains:['mt0','mt1','mt2','mt3']
-});
-var terreno = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
-    subdomains:['mt0','mt1','mt2','mt3']
-});
-var trafico = L.tileLayer('https://{s}.google.com/vt/lyrs=m@221097413,traffic&x={x}&y={y}&z={z}', {
-    subdomains:['mt0','mt1','mt2','mt3']
-});
+//var satelit = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+//    subdomains:['mt0','mt1','mt2','mt3']
+//});
+//var terreno = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
+//    subdomains:['mt0','mt1','mt2','mt3']
+//});
+//var trafico = L.tileLayer('https://{s}.google.com/vt/lyrs=m@221097413,traffic&x={x}&y={y}&z={z}', {
+//    subdomains:['mt0','mt1','mt2','mt3']
+//});
 
 // googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}'
 // googleHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}'
@@ -159,6 +159,17 @@ var trafico = L.tileLayer('https://{s}.google.com/vt/lyrs=m@221097413,traffic&x=
 // Satellite: s;
 // Streets: m;
 // Terrain: p;
+
+// Visusalizacion de mapa segun zoom
+const updateTiles = () => {
+  const zoom = map.getZoom();
+  if (zoom >= 17) calles.setOpacity(1 - (zoom - 17) / 5)
+  else hibrido.setOpacity(1);
+  if (zoom <= ZoomMax) hibrido.setOpacity(1 - (ZoomMax - zoom) / 4)
+  else hibrido.setOpacity(1);
+};
+map.on('zoomend', updateTiles);
+///////////////////////////////
 
 var baseMaps = {
   "Calles": calles,
@@ -175,19 +186,10 @@ var overlayMaps = {
     "Pokenido": nidos,	
     "pedir/pendiente": pedidas
 };
-L.control.layers(baseMaps, overlayMaps).addTo(map);
+L.control.layers(null, overlayMaps).addTo(map);
 
-// Visusalizacion de mapa segun zoom
-const updateTiles = () => {
-  const zoom = map.getZoom();
-  if (zoom >= 17) calles.setOpacity(1 - (zoom - 17) / 5)
-  else hibrido.setOpacity(1);
-  if (zoom <= ZoomMax) hibrido.setOpacity(1 - (ZoomMax - zoom) / 4)
-  else hibrido.setOpacity(1);
-};
-map.on('zoomend', updateTiles);
-///////////////////////////////
-
+	/////// S2 cells
+	
 let regionLayer;
 const updateMapGrid = () => {
   regionLayer.clearLayers();
