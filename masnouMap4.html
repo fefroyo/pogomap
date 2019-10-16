@@ -187,7 +187,24 @@ var overlayMaps = {
     "pedir/pendiente": pedidas
 };
 L.control.layers(null, overlayMaps).addTo(map);
+//// fin cAPAS
 
+// logo pokemongo _______________________
+L.Control.Watermark = L.Control.extend({
+    onAdd: function(map) {
+        var img = L.DomUtil.create('img');
+        img.src = 'https://pokemongolive.com/img/global/pgo_logo.png';
+        img.style.width = '100px';
+        return img;
+    },
+    onRemove: function(map) {}
+});
+L.control.watermark = function(opts) {
+    return new L.Control.Watermark(opts);
+}
+L.control.watermark({ position: 'bottomleft' }).addTo(map);
+// fin logo pokemongo ____________________	
+	
 	/////// S2 cells
 	
 let regionLayer;
