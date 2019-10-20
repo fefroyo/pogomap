@@ -56,7 +56,7 @@ div#infoboxpicimg {
   margin-top: 8px;
 }
 .pokenido {width: 35px;height: 35px;}
-.posicion {width: 48px;height: 48px;margin-left: -14px;}	
+.posicion {width: 35px;height: 48px;}	
 
 /* pokemon icon img */
 .displaypokemon {
@@ -119,7 +119,7 @@ div#infoboxpicimg {
 <script>
 var lati = '41.482539';
 var logi = '2.3252110';
-let ZoomMax = 22;
+let ZoomMax = 20;
 	
 var gymsM = new L.LayerGroup();
 var pokestopsM = new L.LayerGroup();
@@ -132,21 +132,16 @@ var map = L.map('map', {
   layers: [gymsM]
 }).setView([lati, logi], 15);	
 
-var calles = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-    subdomains:['mt0','mt1','mt2','mt3'], maxZoom: ZoomMax
-}).addTo(map);
+var calles = L.tileLayer('https://mts0.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&apistyle=s.t:33|s.e:l|p.v:off', { 
+  subdomains:['mt0','mt1','mt2','mt3'] , maxZoom: 20 }).addTo(map);
 var hibrido = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
-    subdomains:['mt0','mt1','mt2','mt3'], maxZoom: ZoomMax
-}).addTo(map);
+    subdomains:['mt0','mt1','mt2','mt3'], maxZoom: 20 }).addTo(map);	
 //var satelit = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
-//    subdomains:['mt0','mt1','mt2','mt3']
-//});
+//    subdomains:['mt0','mt1','mt2','mt3'], maxZoom: 20 });
 //var terreno = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
-//    subdomains:['mt0','mt1','mt2','mt3']
-//});
+//    subdomains:['mt0','mt1','mt2','mt3'], maxZoom: 20});
 //var trafico = L.tileLayer('https://{s}.google.com/vt/lyrs=m@221097413,traffic&x={x}&y={y}&z={z}', {
-//    subdomains:['mt0','mt1','mt2','mt3']
-//});
+//    subdomains:['mt0','mt1','mt2','mt3'], maxZoom: 20});
 
 // googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}'
 // googleHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}'
@@ -155,10 +150,7 @@ var hibrido = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',
 // googleTraffic = L.tileLayer('https://{s}.google.com/vt/lyrs=m@221097413,traffic&x={x}&y={y}&z={z}'
 
 // Note the difference in the "lyrs" parameter in the URL:
-// Hybrid: s,h;
-// Satellite: s;
-// Streets: m;
-// Terrain: p;
+// Hybrid: s,h; - Satellite: s; - Streets: m; - Terrain: p;
 
 // Visusalizacion de mapa segun zoom
 const updateTiles = () => {
