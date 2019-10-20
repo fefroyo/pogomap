@@ -8,6 +8,9 @@
 <!-- Leaflet's CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"/>
 <link rel='stylesheet' href='https://labs.easyblog.it/maps/leaflet-search/src/leaflet-search.css'>
+<!-- cluster CSS -->	
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.1.0/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.1.0/dist/MarkerCluster.Default.css" />	
 <!-- Leaflet's JS -->
 <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
 <script src='https://labs.easyblog.it/maps/leaflet-search/src/leaflet-search.js'></script>
@@ -116,13 +119,14 @@ div#infoboxpicimg {
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.3.5/tabletop.min.js'></script>
 <script src="https://cdn.jsdelivr.net/npm/leaflet-extra-markers@1.0.6/src/assets/js/leaflet.extra-markers.min.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.1.0/dist/leaflet.markercluster.js"></script>	
 <script>
 var lati = '41.482539';
 var logi = '2.3252110';
 let ZoomMax = 20;
 	
-var gymsM = new L.LayerGroup();
-var pokestopsM = new L.LayerGroup();
+var gymsM = L.markerClusterGroup();
+var pokestopsM = L.markerClusterGroup();
 var nuevas = new L.LayerGroup();
 var pedidas = new L.LayerGroup();
 var nidos = new L.LayerGroup();	
@@ -396,15 +400,14 @@ var code = "1NewJUeqgSRSu4kodHbodlggMjhI-0IYNYX4tJUdO58A";
     var loc = [gim["latitude"].replace(',','.'), gim["longitude"].replace(',','.')];
 
         if (gim.iconori === "gym") {
-          marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(gymsM);  
-          map.addLayer(marker);
-          // var bounds = marker.getBounds(); // [1]
-          // map.fitBounds(bounds);
-          // map.fitBounds(bounds).addLayer(marker);
+          marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon});  
+          gymsM.addLayer(marker);
+          map.addLayer(gymsM);
         };
         if (gim.iconori === "pstop") {
           marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(pokestopsM);
-          map.addLayer(marker);
+          pokestopsM.addLayer(marker);
+          map.addLayer(pokestopsM);
         };
         if (gim.iconori === "gymex") {
           marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(nuevas);
