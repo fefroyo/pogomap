@@ -8,6 +8,8 @@
     <link rel="shortcut icon" href="./icons/pstop.png">
 <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/leaflet.css'>
 <link rel='stylesheet' href='https://labs.easyblog.it/maps/leaflet-search/src/leaflet-search.css'>
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.1.0/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.1.0/dist/MarkerCluster.Default.css" />    
 <link rel="stylesheet" href="./css/style.css">
 <!-- extramarkers -->
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.10.2/css/all.css">
@@ -37,32 +39,33 @@
 <script src='https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.3.5/tabletop.min.js'></script>
 <!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/(1.5.1 -1.3.5/tabletop.min.js'></script> -->
 <script src="https://cdn.jsdelivr.net/npm/leaflet-extra-markers@1.0.6/src/assets/js/leaflet.extra-markers.min.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.1.0/dist/leaflet.markercluster.js"></script>
+    
 <script>
 //https://pkmref.com/images/set_1/608.png
 
 // https://github.com/jsoma/tabletop
 // https://labs.easyblog.it/maps/leaflet-search/
 // https://journocode.com/2017/02/20/javascript-interactive-map-with-search-bar-leaflet/
-var gymsM = new L.LayerGroup(),
-  pokestopsM = new L.LayerGroup(),
-  gymEX = new L.LayerGroup(),
+var gymsM = L.markerClusterGroup(),
+  pokestopsM = L.markerClusterGroup(),
+  gymEX = L.markerClusterGroup(),
   nidos = new L.LayerGroup();
 
-var calles = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-    subdomains:['mt0','mt1','mt2','mt3']
-});
-var hibrido = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
-    subdomains:['mt0','mt1','mt2','mt3']
-});
-var satelit = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
-    subdomains:['mt0','mt1','mt2','mt3']
-});
-var terreno = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
-    subdomains:['mt0','mt1','mt2','mt3']
-});
-var trafico = L.tileLayer('https://{s}.google.com/vt/lyrs=m@221097413,traffic&x={x}&y={y}&z={z}', {
-    subdomains:['mt0','mt1','mt2','mt3']
-});
+const calles = L.tileLayer('https://mts0.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&apistyle=s.t:33|s.e:l|p.v:off', { 
+  subdomains:['mt0','mt1','mt2','mt3'] , maxZoom: 20 }).addTo(map);
+const hibrido = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+    subdomains:['mt0','mt1','mt2','mt3'], maxZoom: 20 }).addTo(map);
+    
+//var satelit = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+//    subdomains:['mt0','mt1','mt2','mt3']
+//});
+//var terreno = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
+//    subdomains:['mt0','mt1','mt2','mt3']
+//});
+//var trafico = L.tileLayer('https://{s}.google.com/vt/lyrs=m@221097413,traffic&x={x}&y={y}&z={z}', {
+//    subdomains:['mt0','mt1','mt2','mt3']
+//});
 
 var lati = '41.539188';
 var logi = '2.444976';
@@ -74,7 +77,7 @@ var map = L.map('map', {
 var baseMaps = {
   "Calles": calles,
   "Hibrido": hibrido,
-  "Satelite": satelit,
+  //"Satelite": satelit,
   // "Terreno": terreno,
   // "Trafico": trafico
   // "Gym": gymsM,
@@ -185,16 +188,19 @@ Tabletop.init({
       var loc = [gim["latitude"].replace(',','.'), gim["longitude"].replace(',','.')];
 
         if (gim.iconori === "gym") {
-          marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(gymsM);  
-          map.addLayer(marker);
+          marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon});
+          gymsM.addLayer(marker);
+          map.addLayer(gymsM);
         };
         if (gim.iconori === "pstop") {
-          marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(pokestopsM);
-          //map.addLayer(marker);
+          marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon});
+          pokestopsM.addLayer(marker);
+          map.addLayer(pokestopsM);
         };
         if (gim.iconori === "gymex") {
-          marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(gymEX);
-          map.addLayer(marker);
+          marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon});
+          gymEX.addLayer(marker);
+          map.addLayer(gymEX);
         };
         if (gim.iconori === "pedida") {
           marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(pedidas);
@@ -204,9 +210,7 @@ Tabletop.init({
           marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(pedidas);
           map.addLayer(marker);
         };
-     
-
-
+        
         marker.bindPopup("<h2><strong style='color: #84b819'>" + gim.nombre + "</strong></h2>" +
           " <h3><a href='http://maps.google.com/maps?q=" +gim["latitude"]+', '+gim["longitude"]+ "'>" +gim["latitude"]+', '+gim["longitude"]+ "</a></h3>" +
           "<div id='infoboxpic'><div id='infoboxpicin'><div id='infoboxpicimg' style='background-image: url("+gim.imagen+");'></div></div></div>");
