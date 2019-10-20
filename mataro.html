@@ -47,10 +47,10 @@
 // https://github.com/jsoma/tabletop
 // https://labs.easyblog.it/maps/leaflet-search/
 // https://journocode.com/2017/02/20/javascript-interactive-map-with-search-bar-leaflet/
-var gymsM = L.markerClusterGroup(),
-  pokestopsM = L.markerClusterGroup(),
-  gymEX = L.markerClusterGroup(),
-  nidos = new L.LayerGroup();
+var gymsM = L.markerClusterGroup();
+var pokestopsM = L.markerClusterGroup();
+var gymEX = L.markerClusterGroup();
+var nidos = new L.LayerGroup();
 
 const calles = L.tileLayer('https://mts0.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&apistyle=s.t:33|s.e:l|p.v:off', { 
   subdomains:['mt0','mt1','mt2','mt3'] , maxZoom: 20 }).addTo(map);
@@ -71,7 +71,7 @@ var lati = '41.539188';
 var logi = '2.444976';
 
 var map = L.map('map', {
-  layers: [calles]
+  layers: [calles, gymsM]
 }).setView([lati, logi], 15);
 
 var baseMaps = {
