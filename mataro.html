@@ -51,6 +51,13 @@ var gymsM = L.markerClusterGroup();
 var pokestopsM = L.markerClusterGroup();
 var gymEX = L.markerClusterGroup();
 var nidos = new L.LayerGroup();
+    
+var lati = '41.539188';
+var logi = '2.444976';
+
+var map = L.map('map', {
+  layers: [calles, gymsM]
+}).setView([lati, logi], 15);    
 
 const calles = L.tileLayer('https://mts0.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&apistyle=s.t:33|s.e:l|p.v:off', { 
   subdomains:['mt0','mt1','mt2','mt3'] , maxZoom: 20 }).addTo(map);
@@ -67,12 +74,6 @@ const hibrido = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}
 //    subdomains:['mt0','mt1','mt2','mt3']
 //});
 
-var lati = '41.539188';
-var logi = '2.444976';
-
-var map = L.map('map', {
-  layers: [calles, gymsM]
-}).setView([lati, logi], 15);
 
 var baseMaps = {
   "Calles": calles,
