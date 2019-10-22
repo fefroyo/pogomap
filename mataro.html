@@ -21,9 +21,9 @@
   border-radius: 50%;
   margin-top: 8px;
 }
-.pokenido {
-  width: 35px;height: 35px;
-}
+.pokenido {width: 35px;height: 35px;}
+.posicion {width: 35px;height: 48px;}
+	
 .extra-marker-square-transparent {
     background: url() no-repeat 0 0!important;
 }
@@ -112,35 +112,9 @@ var overlayMaps = {
 L.control.layers(null,overlayMaps).addTo(map);
 //L.control.layers(overlayMaps,null).addTo(map);
 
-  // marcador punto ***************
-
-  let person = L.ExtraMarkers.icon({
-      icon: "fa-number", number:'A', iconColor: 'white',markerColor: "black",shape: "star",
-  });  
-  var myMarker = new L.marker([lati,logi] , {icon:person, draggable: true}).addTo(map)
-  // var myMarker = L.marker([lati,logi] , {icon:person, draggable: true}).addTo(map).on('dragend', function(e) {
-      
-  //     // var coord = e.latlng.toString().split(',');
-  //     // var lat = coord[0].split('(');
-  //     // var lng = coord[1].split(')');
-
-  //     //myMarker.bindPopup("<b>Lat: </b>"+lati+"<br><b>Long: </b>"+logi+
-  //      //"<br><b>Coords:</b> "+ lati+","+logi).openPopup();
-  //     myMarker.bindPopup("<b>Lat: </b>" + e.latlng.lat.toFixed(5)+"<br><b>Long: </b>" +e.latlng.lng.toFixed(5)+
-  //      "<br><b>Coords:</b> "+ e.latlng.lat.toFixed(5)+","+e.latlng.lng.toFixed(5)).openPopup();
-  // });
-
-  myMarker.on('drag', function(e) {
-    
-    var coord = e.latlng.toString().split(',');
-    var lat = coord[0].split('(');
-    var lng = coord[1].split(')');
-    
-    myMarker.bindPopup("<b>Lat: </b>" + lat[1]+"<br><b>Long: </b>" +lng[0]+
-       "<br><b>Coords:</b> "+ e.latlng.lat.toFixed(5)+","+e.latlng.lng.toFixed(5)).openPopup();
-  });
 // ------------------------------
-// logo pokemongo _______________________
+
+	// logo pokemongo _______________________
 L.Control.Watermark = L.Control.extend({
     onAdd: function(map) {
         var img = L.DomUtil.create('img');
@@ -164,7 +138,7 @@ const updateMapGrid = () => {
   const bounds = map.getBounds();
   const seenCells = {};
   const levels = {
-    17: {color: '#ccc',opacity: 0.8,weight: 1},
+    17: {color: '#212121',opacity: 0.8,weight: 1},
     14: {color: '#FF0000',opacity: 0.6,weight: 3},
       };
   const drawCell = (cell, options) => {
@@ -452,6 +426,24 @@ setInterval(updateTime, 1000);
 // function onLocationError(e) {alert(e.message);}
 // map.on('locationfound', onLocationFound);
 //map.on('locationerror', onLocationError);
+	
+  // marcador punto ***************
+
+let person = L.ExtraMarkers.icon({
+  icon: "",number:'P',markerColor: "transparent",shape: "square",prefix: "fa",
+  innerHTML:'<img class="posicion" src="./icons/pokeplus.png" />'
+});  
+var myMarker = new L.marker([lati,logi] , {icon:person, draggable: true}).addTo(map)
+
+myMarker.on('drag', function(e) {
+
+var coord = e.latlng.toString().split(',');
+var lat = coord[0].split('(');
+var lng = coord[1].split(')');
+
+myMarker.bindPopup("<b>Lat: </b>" + lat[1]+"<br><b>Long: </b>" +lng[0]+
+	"<br><b>Coords:</b> "+ e.latlng.lat.toFixed(5)+","+e.latlng.lng.toFixed(5)).openPopup();
+});	
 
 regionLayer = L.layerGroup();
 map.addLayer(regionLayer);
