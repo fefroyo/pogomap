@@ -42,27 +42,29 @@
 <script src="https://unpkg.com/leaflet.markercluster@1.1.0/dist/leaflet.markercluster.js"></script>
     
 <script>
+var lati = '41.539188';
+var logi = '2.444976';
+let ZoomMax = 20;    
+    
 //https://pkmref.com/images/set_1/608.png
-
 // https://github.com/jsoma/tabletop
 // https://labs.easyblog.it/maps/leaflet-search/
 // https://journocode.com/2017/02/20/javascript-interactive-map-with-search-bar-leaflet/
+    
 var gymsM = L.markerClusterGroup();
 var pokestopsM = L.markerClusterGroup();
 var gymEX = L.markerClusterGroup();
 var nidos = new L.LayerGroup();
     
-var lati = '41.539188';
-var logi = '2.444976';
-
 var map = L.map('map', {
-  layers: [calles, gymsM]
+  maxZoom: ZoomMax,  
+  layers: [gymsM]
 }).setView([lati, logi], 15);    
 
 const calles = L.tileLayer('https://mts0.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&apistyle=s.t:33|s.e:l|p.v:off', { 
-  subdomains:['mt0','mt1','mt2','mt3'] , maxZoom: 20 });
+  subdomains:['mt0','mt1','mt2','mt3'] , maxZoom: 20 }).addTo(map);
 const hibrido = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
-    subdomains:['mt0','mt1','mt2','mt3'], maxZoom: 20 });
+    subdomains:['mt0','mt1','mt2','mt3'], maxZoom: 20 }).addTo(map);
     
 //var satelit = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
 //    subdomains:['mt0','mt1','mt2','mt3']
@@ -74,6 +76,16 @@ const hibrido = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}
 //    subdomains:['mt0','mt1','mt2','mt3']
 //});
 
+// Visusalizacion de mapa segun zoom
+const updateTiles = () => {
+  const zoom = map.getZoom();
+  if (zoom >= 17) calles.setOpacity(1 - (zoom - 17) / 5)
+  else hibrido.setOpacity(1);
+  if (zoom <= ZoomMax) hibrido.setOpacity(1 - (ZoomMax - zoom) / 4)
+  else hibrido.setOpacity(1);
+};
+map.on('zoomend', updateTiles);
+///////////////////////////////    
 
 var baseMaps = {
   "Calles": calles,
@@ -96,7 +108,7 @@ var overlayMaps = {
 //   position: 'topright', // 'topleft', 'bottomleft', 'bottomright'
 //   collapsed: false // true
 // }).addTo(map);
-L.control.layers(baseMaps,overlayMaps).addTo(map);
+L.control.layers(null,overlayMaps).addTo(map);
 //L.control.layers(overlayMaps,null).addTo(map);
 
   // marcador punto ***************
