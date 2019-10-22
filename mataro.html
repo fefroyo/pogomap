@@ -60,9 +60,9 @@ var map = L.map('map', {
 }).setView([lati, logi], 15);    
 
 const calles = L.tileLayer('https://mts0.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&apistyle=s.t:33|s.e:l|p.v:off', { 
-  subdomains:['mt0','mt1','mt2','mt3'] , maxZoom: 20 }).addTo(map);
+  subdomains:['mt0','mt1','mt2','mt3'] , maxZoom: 20 });
 const hibrido = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
-    subdomains:['mt0','mt1','mt2','mt3'], maxZoom: 20 }).addTo(map);
+    subdomains:['mt0','mt1','mt2','mt3'], maxZoom: 20 });
     
 //var satelit = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
 //    subdomains:['mt0','mt1','mt2','mt3']
