@@ -452,6 +452,12 @@ setInterval(updateTime, 1000);
 // function onLocationError(e) {alert(e.message);}
 // map.on('locationfound', onLocationFound);
 //map.on('locationerror', onLocationError);
+
+regionLayer = L.layerGroup();
+map.addLayer(regionLayer);
+map.on('moveend', updateMapGrid);
+updateTiles();
+updateMapGrid();
 </script>
 </body>
 </html>
