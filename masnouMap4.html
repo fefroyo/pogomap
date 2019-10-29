@@ -346,16 +346,18 @@ var code = "1NewJUeqgSRSu4kodHbodlggMjhI-0IYNYX4tJUdO58A";
           marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon});  
           gymsM.addLayer(marker);
           map.addLayer(gymsM);
-          
+                 ContarPOGYC14(loc);
         };
         if (gim.iconori === "pstop") {
           marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(pokestopsM);
           pokestopsM.addLayer(marker);
           map.addLayer(pokestopsM);
+                 ContarPOGYC14(loc);
         };
         if (gim.iconori === "gymex") {
           marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(nuevas);
           map.addLayer(marker);
+                 ContarPOGYC14(loc);
         };
         if (gim.iconori === "pedida") {
           marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(pedidas);
@@ -369,15 +371,11 @@ var code = "1NewJUeqgSRSu4kodHbodlggMjhI-0IYNYX4tJUdO58A";
           " <h3><a href='http://maps.google.com/maps?q=" +gim["latitude"]+', '+gim["longitude"]+ "'>" +gim["latitude"]+', '+gim["longitude"]+ "</a></h3>" +
           "<div id='infoboxpic'><div id='infoboxpicin'><div id='infoboxpicimg' style='background-image: url(" +gim.imagen + ");'></div></div></div>");
             //map.addLayer(marker);
-
-            marker.addTo(gymsM);
-            ContarPOGYC14(loc);
-
         })
 
 /// contador de gyms y paradas /////
 let contador = 1;   // Para saber en que linea de la hoja de datos se encuentra el marcador
-contador = 1;   // Para saber en que linea de la hoja de datos se encuentra el marcador
+    contador = 1;   // Para saber en que linea de la hoja de datos se encuentra el marcador
 // Ponemos Marcadores con numero de pokeparadas y gyms en celda 14  
 for (i = 0; i < ContMarkerNumCell14; i++){
 var loc = midPoint(ArrayMarkerNumCell14[i].Lat1,ArrayMarkerNumCell14[i].Lon1,ArrayMarkerNumCell14[i].Lat2,ArrayMarkerNumCell14[i].Lon2);
