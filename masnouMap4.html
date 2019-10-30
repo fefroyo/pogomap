@@ -68,7 +68,8 @@ div#infoboxpicimg {
   margin-top: 8px;
 }
 .pokenido {width: 35px;height: 35px;}
-.posicion {width: 35px;height: 48px;} 
+.posicion {width: 35px;height: 48px;}
+.faltan {font-size: 32px;color:purple}   
 /* pokemon icon img */
 .displaypokemon {
     position: absolute;
@@ -384,9 +385,21 @@ let itotalpg = L.ExtraMarkers.icon({
   icon: "fa-number",iconColor: 'black',markerColor: "white", shape: "square",prefix: "fa",
     number: ArrayMarkerNumCell14[i].ContMark.toString(),
   });
-  marker = new L.Marker(loc, {title: " Nuevo gym  2a, 6a y 20a ", icon: itotalpg} );
-  marker.bindPopup("Nuevo gym  2a, 6a y 20a");
-  //    marker.number=ArrayMarkerNumCell14[i].ContMark.toString();
+    marker = new L.Marker(loc, {title: " Nuevo gym  2a, 6a y 20a ", icon: itotalpg} );
+  
+var numerito = ArrayMarkerNumCell14[i].ContMark.toString();
+if (numerito < 2){
+    numerito = 1;
+}else if (numerito < 6){
+    numerito = 6 - numerito;
+}else if (numerito < 20){
+    numerito = 20 - numerito;
+}else {numerito = 0;};
+if (numerito > 0){
+    marker.bindPopup("<h2>Faltan = <b class='faltan'>"+
+                      numerito+"</b><br>para nuevo Gym</h2>"+
+                      "Nuevo gym cada: 2a, 6a y 20a paradas");}
+
   marker.addTo(LG_ContadorPG);  // Añadimos al grupo de totales PO GY 
 };
 
