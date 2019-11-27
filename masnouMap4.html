@@ -570,9 +570,10 @@ const updateMapGrid = () => {
 // map.on('locationerror', onLocationError);
 
 L.control.locate({
-//flyTo: true,
+  keepCurrentZoomLevel: true,
   drawCircle: true,
   drawMarker: true,
+  strings: { popup: 'Estas aqui !'}, 
   enableHighAccuracy:true
 }).addTo(map);   
 
