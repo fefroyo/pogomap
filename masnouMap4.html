@@ -145,23 +145,13 @@ var map = L.map('map', {
   maxZoom: ZoomMax,
   layers: [gymsM]
 }).setView([lati, logi], 15); 
-var calles = L.tileLayer('https://mts0.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&apistyle=s.t:33|s.e:l|p.v:off', { 
-  subdomains:['mt0','mt1','mt2','mt3'] , maxZoom: 20 }).addTo(map);
+
+var token = 'pk.eyJ1IjoiZG9tb3JpdHoiLCJhIjoiY2o0OHZuY3MwMGo1cTMybGM4MTFrM2dxbCJ9.yCQe43DMRqobazKewlhi9w';
+var mapboxUrl = 'https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/{z}/{x}/{y}@2x?access_token=' + token;
+var calles = new L.TileLayer(mapboxUrl, {tileSize: 512,zoomOffset: -1}).addTo(map);
 var hibrido = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
-    subdomains:['mt0','mt1','mt2','mt3'], maxZoom: 20 }).addTo(map);  
-//var satelit = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
-//    subdomains:['mt0','mt1','mt2','mt3'], maxZoom: 20 });
-//var terreno = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {
-//    subdomains:['mt0','mt1','mt2','mt3'], maxZoom: 20});
-//var trafico = L.tileLayer('https://{s}.google.com/vt/lyrs=m@221097413,traffic&x={x}&y={y}&z={z}', {
-//    subdomains:['mt0','mt1','mt2','mt3'], maxZoom: 20});
-// googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}'
-// googleHybrid = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}'
-// googleSat = L.tileLayer('http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}'
-// googleTerrain = L.tileLayer('http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}'
-// googleTraffic = L.tileLayer('https://{s}.google.com/vt/lyrs=m@221097413,traffic&x={x}&y={y}&z={z}'
-// Note the difference in the "lyrs" parameter in the URL:
-// Hybrid: s,h; - Satellite: s; - Streets: m; - Terrain: p;
+    subdomains:['mt0','mt1','mt2','mt3'], maxZoom: 20 }).addTo(map);
+
 // Visusalizacion de mapa segun zoom
 const updateTiles = () => {
   const zoom = map.getZoom();
@@ -175,9 +165,6 @@ map.on('zoomend', updateTiles);
 var baseMaps = {
   "Calles": calles,
   "Hibrido": hibrido,
-  //"Satelite": satelit,
-  //"Terreno": terreno,
-  //"Trafico": trafico
 };
 var overlayMaps = {
     "Gym": gymsM,
