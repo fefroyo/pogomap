@@ -29,7 +29,11 @@
 var map;
 var mbUrl = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
 var comic = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoicmFsY2FyYXoiLCJhIjoiY2prNmRxcmh1MXNqODNya2NocWY5azEweCJ9.4Qf2Wgh-d1e_ujcRkvq0MA';
-
+   
+var token = 'pk.eyJ1IjoiZG9tb3JpdHoiLCJhIjoiY2o0OHZuY3MwMGo1cTMybGM4MTFrM2dxbCJ9.yCQe43DMRqobazKewlhi9w';
+var mapboxUrl = 'https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/{z}/{x}/{y}@2x?access_token=' + token;
+var calles1 = new L.TileLayer(mapboxUrl, {tileSize: 512,zoomOffset: -1}).addTo(map);
+    
 var gyms = new L.LayerGroup();
 var pokeparadas = new L.LayerGroup();
 var nidos = new L.LayerGroup();
@@ -40,7 +44,7 @@ var calles = L.tileLayer(mbUrl, {id: 'mapbox.streets'}),
     comico = L.tileLayer(comic, {id: 'mapbox.comic'});
   
 map = L.map('map', {
-  layers: [calles2, gyms]
+  layers: [calles1, gyms]
 }).setView([41.482539,2.325211], 14);
 if (map.tap) map.tap.disable();
 map._layersMinZoom=5;
@@ -49,6 +53,7 @@ var baseLayers = {
   "Verde": verde,
   "Comic": comico,
   "calles": calles,
+  "streets": calles1,  
   "wikimedia": calles2
 };
 var overlays = {
