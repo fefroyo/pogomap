@@ -43,7 +43,7 @@ var calles = L.tileLayer(mbUrl, {id: 'mapbox.streets'}),
     comico = L.tileLayer(comic, {id: 'mapbox.comic'});
        
 map = L.map('map', {
-  layers: [calles1, gyms]
+  layers: [calles, gyms]
 }).setView([41.482539,2.325211], 14);
 if (map.tap) map.tap.disable();
 map._layersMinZoom=5;
@@ -52,7 +52,7 @@ var baseLayers = {
   "Verde": verde,
   "Comic": comico,
   "calles": calles,
-  "streets": calles1,  
+  "strets": calles1,  
   "wikimedia": calles2
 };
 var overlays = {
