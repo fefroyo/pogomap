@@ -75,14 +75,27 @@ var pointB = new L.LatLng(-90, 0);
 var pointList = [pointA, pointB];
 
 var firstpolyline = new L.Polyline(pointList, {
-    color: 'red',
+    color: 'green',
     weight: 3,
     opacity: 0.5,
     smoothFactor: 1
 });
 firstpolyline.addTo(map);
 
+// ECUADOR - EQUADOR
+var pointEA = new L.LatLng(-0, -180);
+var pointEB = new L.LatLng(0, 180);
+var pointListE = [pointEA, pointEB];
 
+var elEcuador = new L.Polyline(pointListE, {
+    color: 'red',
+    weight: 3,
+    opacity: 0.5,
+    smoothFactor: 1
+});
+elEcuador.addTo(map);	
+
+	
 // pokeSpawn ------------------------------
 var pokemon1 = [
     ["417","417","Pachirisu",53.547310, -113.534225],
