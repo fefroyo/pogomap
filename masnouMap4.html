@@ -146,7 +146,7 @@ var map = L.map('map', {
   layers: [gymsM]
 }).setView([lati, logi], 15); 
 
-var token = 'pk.eyJ1IjoiZG9tb3JpdHoiLCJhIjoiY2o0OHZuY3MwMGo1cTMybGM4MTFrM2dxbCJ9.yCQe43DMRqobazKewlhi9w';
+var token = 'pk.eyJ1IjoiYmVydGYiLCJhIjoiY2piNDU5ZXdqMnM4ZDJ3cWsxazlxeWZxMyJ9.7Wgr37jGzWrjk6cqLcJRBQ';
 var mapboxUrl = 'https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/{z}/{x}/{y}@2x?access_token=' + token;
 var calles = new L.TileLayer(mapboxUrl, {tileSize: 512,zoomOffset: -1}).addTo(map);
 var hibrido = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
