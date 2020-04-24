@@ -591,20 +591,25 @@ function midPoint(lat1,lon1,lat2,lon2)
 // buscador ___________________
 var controlSearch = new L.Control.Search({
   position:'topleft',
-  //layer: nuevas,
-  layer: L.featureGroup([gymsM, pokestopsM,]),
-  //propertyName: 'nombre',
+  layer: L.featureGroup([LG_pokestop, LG_gym, LG_gymex, ]),
   initial: false,
-  zoom: 16,
+  zoom: (ZoomMax-2),
   marker: {
-    // icon: new L.Icon({iconUrl:'icons/pstop1.png', iconSize: [0,0]}),
-    circle: {
-      radius: 60,
-      color: '#0a0',
-      opacity: 1
-    }
-  },
-  textPlaceholder: 'Pokeparada...'
+	  icon: false,
+          circle: {
+              radius: 30,
+	          stroke: true,
+	          color: "#000000",
+	          weight: 1,
+	          opacity: 1,
+	          fill: true,
+	          fillColor: "#00ff00",
+	          fillOpacity: 0.4,
+	          },
+          },
+  textPlaceholder: '...',
+  hideMarkerOnCollapse: true,
+  minLength: 2,
 });
 map.addControl(controlSearch);
 	  
