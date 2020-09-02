@@ -148,7 +148,7 @@ var map = L.map('map', {
   layers: [gymsM]
 }).setView([lati, logi], 17);
 
-var token = 'pk.eyJ1IjoiZG9tb3JpdHoiLCJhIjoiY2o0OHZuY3MwMGo1cTMybGM4MTFrM2dxbCJ9.yCQe43DMRqobazKewlhi9w';
+var token = 'pk.eyJ1IjoiYmVydGYiLCJhIjoiY2piNDU5ZXdqMnM4ZDJ3cWsxazlxeWZxMyJ9.7Wgr37jGzWrjk6cqLcJRBQ';
 var mapboxUrl = 'https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/{z}/{x}/{y}@2x?access_token=' + token;
 var calles1 = new L.TileLayer(mapboxUrl, {tileSize: 512,zoomOffset: -1}).addTo(map);
 
@@ -181,7 +181,8 @@ var overlayMaps = {
 };
 L.control.layers(null, overlayMaps).addTo(map);
 //// fin cAPAS
-// logo pokemongo _______________________
+
+   // logo pokemongo _______________________
 L.Control.Watermark = L.Control.extend({
     onAdd: function(map) {
         var img = L.DomUtil.create('img');
