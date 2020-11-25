@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <!-- Leaflet's CSS -->
+   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+   integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+   crossorigin=""/>
+   <!-- Leaflet's JS -->
+   <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+   integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+   crossorigin=""></script>
+<style>
+html, body, #map {height:100%;width:100%;padding:0px;margin:0px;}
+/*.leaflet-popup { width: 201px!important;}*/
+div#search {
+	background-color: white;
+	position: absolute;
+	bottom: 40px;
+	left: 40px; 
+	width: auto;
+	height: auto;
+	padding: 10px;
+	z-index: 999;
+}
+div#search input {
+	width: 200px;
+}
+div#results {
+	font-style: sans-serif;
+	color: black;
+	font-size: 75%;
+	z-index: 999;
+}
+.address { cursor:pointer }
+.address:hover { color:#AA0000;text-decoration:none }
+</style>
+</head>
+
+<body>
+
+	<div id="map"></div>
+
+	<div id="search">
+		<input type="text" name="addr" value="" id="addr" size="10" />
+		<button type="button" onclick="addr_search();">Search</button>
+		<div id="results"/>
+	</div>
+
+
+<script>
+var lati = '41.49512'; // 41.49512, 2.36385
+var lng = '2.36385';
+
+var startLatLng = new L.LatLng(lati, lng);
+
+var map = L.map('map').setView([lati, lng], 13);
+
+L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+		subdomains:['mt0','mt1','mt2','mt3']
+}).addTo(map);
+
+// var marker = L.marker([lat, lng]).addTo(map);
+
+// var marker = L.marker(startLatLng).addTo(map)
+//     //.bindPopup("<b>Coordenadas</b><br />"+startLatLng).openPopup();
+//     .bindPopup("<b>Coordenadas</b><br />"+startLatLng.lat.toFixed(5)+", "+startLatLng.lng.toFixed(5)).openPopup();
+
+// map.on('click', function(e) {
+//   var popup = L.popup().setLatLng(e.latlng)
+//       .setContent(e.latlng.lat.toFixed(5)+", "+e.latlng.lng.toFixed(5))
+//       .openOn(map);
+// });
+
+
+var myMarker = L.marker([lati, lng], {title: "Coordinates", alt: "Coordinates", draggable: true}).addTo(map).on('dragend', function() {
+ var lat = myMarker.getLatLng().lat.toFixed(8);
+ var lon = myMarker.getLatLng().lng.toFixed(8);
+ var czoom = map.getZoom();
+ if(czoom < 18) { nzoom = czoom; }//+ 2; }
+ if(nzoom > 18) { nzoom = 18; }
+ if(czoom != 18) { map.setView([lat,lon], nzoom); } else { map.setView([lat,lon]); }
+ myMarker.bindPopup("My marker: " + lat + ", " +lon).openPopup();
+});
+
+function chooseAddr(lat1, lng1, adress){
+ myMarker.closePopup();
+ map.setView([lat1, lng1],18);
+ myMarker.setLatLng([lat1, lng1]);
+ lat = lat1.toFixed(8);
+ lon = lng1.toFixed(8);
+ 
+ //myMarker.bindPopup("Coords: " + lat + ", " +lon).openPopup();
+ myMarker.bindPopup("Coords: <strong>" + lat + ", " +lon + "</strong><br>" + adress).openPopup();
+
+}
+
+function addr_search(){
+ var inp = document.getElementById("addr");
+ var xmlhttp = new XMLHttpRequest();
+ var url = "https://nominatim.openstreetmap.org/search?format=json&limit=3&q=" + inp.value;
+ xmlhttp.onreadystatechange = function(){
+   if (this.readyState == 4 && this.status == 200){
+    var myArr = JSON.parse(this.responseText);
+
+    //console.log(myArr)
+     myFunction(myArr);
+
+   }
+ };
+ xmlhttp.open("GET", url, true);
+ xmlhttp.send();
+}
+
+function myFunction(arr){
+ var out = "<br />";
+ var i;
+
+ if(arr.length > 0){
+  for(i = 0; i < arr.length; i++){
+
+   out += "<div class='address' title='Show Location and Coordinates' onclick='chooseAddr(" + arr[i].lat + ", " + arr[i].lon + ", &quot;" +arr[i].display_name+ "&quot;);return false;'>" + arr[i].display_name + "</div>";
+  }
+  document.getElementById('results').innerHTML = out;
+
+  // console.log(arr[0].display_name)
+
+ }
+ else{ document.getElementById('results').innerHTML = "Sorry, no results...";}
+}
+</script>
+</body>
+</html>
