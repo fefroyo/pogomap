@@ -35,6 +35,12 @@ html, body, #map {height:100%;width:100%;padding:0px;margin:0px;}
 </head>
 
 <body>
+   
+Coords: <input type="text" name="latlongi" id="latlongi"/>
+<input type="button" onclick="zoomTo2()" value="zoomTo2"/><br>
+Lat: <input type="text" name="lat" id="lat"/>
+Long: <input type="text" name="lng" id="lng"/>
+<input type="button" onclick="zoomTo()" value="zoomTo"/>
 
   <div id="map"></div>
 
@@ -84,27 +90,36 @@ map.on('click', function(e) {
   
   });
 });
+   
+function zoomTo() {
+    var lat = document.getElementById("lat").value;
+    var lng = document.getElementById("lng").value;
+    
+    map.panTo(new L.LatLng(lat, lng));
+
+    var marker = new L.Marker(new L.LatLng(lat, lng) );
+		marker.bindPopup('coords: '+ lat + ', '+ lng ).addTo(map).openPopup();
+}
+function zoomTo2() {
+  var latlong = document.getElementById("latlongi").value;
+
+  var texto = latlong.split(',');
+  var lati = texto[0];
+  var long = texto[1];
+
+  map.panTo(new L.LatLng(lati,long));
+  
+  var marker2 = new L.Marker(new L.LatLng(lati,long) );
+  marker2.bindPopup('coords: '+ lati + ', '+ long ).addTo(map).openPopup();
+}
 
 searchControl.on('search:locationfound', function(e) {
 
-  // L.marker(e.latlng).addTo(map).bindPopup("<strong>"+
-  //   e.latlng.lat.toFixed(5)+", "+e.latlng.lng.toFixed(5)+"</strong>")
-  // .openPopup();
-
   geocodeService.reverse().latlng(e.latlng).run(function(error, result) {
-    // L.marker(result.latlng).addTo(map).bindPopup(result.address.Match_addr).openPopup();
-    
-    // L.popup().setLatLng(result.latlng)
-    //   .setContent("<p>"+result.address.Match_addr+"</p><strong>"+ 
-    //     e.latlng.lat.toFixed(5)+", "+e.latlng.lng.toFixed(5)+"</strong>")
-    //   .openOn(map);
-
+     
   L.marker(e.latlng).addTo(map).bindPopup("<h3>"+result.address.Match_addr+"</h3><strong>"+
     e.latlng.lat.toFixed(5)+", "+e.latlng.lng.toFixed(5)+"</strong>")
-  .openPopup();
-
-// L.marker(result.latlng).addTo(map).bindPopup("<p>"+result.address.Match_addr+"</p><strong>" + e.latlng.lat.toFixed(5)+", "+e.latlng.lng.toFixed(5)+"</strong>").openPopup();
-  
+  .openPopup();  
   });
 
 });
