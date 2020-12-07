@@ -141,6 +141,8 @@ var pokemon1 = [
 
     ["422","422","Shellos",42.13825, -0.40809],
     ["422","422-e","Shellos",41.39131, 2.14341],
+
+    ["707","707","Klefki",48.007681, 0.194628],
 ];
 var LeafIcon = L.Icon.extend({
     options: {
@@ -150,13 +152,19 @@ var LeafIcon = L.Icon.extend({
 var pokenido;
 for (var i = 0; i < pokemon1.length; i++) {
       pokenido = new L.marker([pokemon1[i][3],pokemon1[i][4]],{
-        icon: new LeafIcon({iconUrl: 'http://www.serebii.net/pokemongo/pokemon/'+pokemon1[i][1]+'.png'})
+        icon: new LeafIcon({iconUrl: 'https://fefroyo.github.io/pokeHome-icons/icons/poke_capture_0'+pokemon1[i][1]+'_000_mf_n_00000000_f_n.png'})
       }).bindPopup('<h1>'+[pokemon1[i][2]]+' '+[pokemon1[i][0]]+'</h3>'+
         " <h3><a href='http://maps.google.com/maps?q="+[pokemon1[i][3]]+","+[pokemon1[i][4]]+"'>"+[pokemon1[i][3]]+", "+[pokemon1[i][4]]+"</a></h3>"+
         '<div class="remainingtext" id="expire" data-expire="123456"></div>'
         ).addTo(map);
     }
 // fin pokespawn ------------------------------------
+// https://fefroyo.github.io/pokemon/icons/
+// https://fefroyo.github.io/pokemon/shiny/
+// pokeHome-icons/icons/
+// pokeHome-icons/shiny/
+	// poke_capture_0 ... _000_mf_n_00000000_f_n (normal).png
+	// poke_capture_0 ... _000_mf_n_00000000_f_r (shiny).png
 </script>
 </body>
 </html>
