@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+   <!-- Leaflet's CSS -->
+ <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+ integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+ crossorigin=""/>
+ <!-- Leaflet's JS -->
+ <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+ integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+ crossorigin=""></script>
+
+<!-- icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-extra-markers@1.0.6/dist/css/leaflet.extra-markers.min.css">
+<script src="https://cdn.jsdelivr.net/npm/leaflet-extra-markers@1.0.6/src/assets/js/leaflet.extra-markers.min.js"></script>
+<!-- jquery y tabletop -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.6.2/tabletop.min.js'></script>
+<style>
+html, body, #map {height:100%;width:100%;padding:0px;margin:0px;}
+/*.leaflet-popup { width: 201px!important;}*/
+.extra-marker { background: none;}
+div#infoboxpic {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background-color: #8bd1e5;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 22px;
+    position: relative;
+    z-index: 8;
+}
+div#infoboxpicin {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-color: #fff;
+    position: relative;
+    top: 5px;
+    left: 5px;
+}
+div#infoboxpicimg {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    position: relative;
+    top: 0px;
+    left: 0px;
+    opacity: .85;
+}
+/* pokemon icon img */
+/*.pokenido {width: 80px;height: 80px;margin-left: -60%;}*/
+.pokenido {width: 35px;height: 35px;}
+/* contador de tiempo */
+.remainingtext{
+    border-radius: 25px;
+    background-color: black;
+    text-align: center;
+    background-color: rgba(100, 100, 100, 0.7);
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+    color: white;
+    width: 100px;
+/* margin-top: 35px; */
+    margin-left: -87.5%;
+}
+</style>
+</head>
+
+<body>
+
+	<div id="map"></div>
+
+<script>  
+var lati = '41.49512'; // 41.49512, 2.36385
+var logi = '2.36385'; //41.41,0
+
+// Greenwich - https://en.wikipedia.org/wiki/Prime_meridian
+// Longitude of Greenwich: -0.0076589 Latitude of Greenwich: 51.4825766
+
+var map = L.map('map').setView([41.48222, 2.3308], 15);
+L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+		subdomains:['mt0','mt1','mt2','mt3']
+}).addTo(map);
+
+// var marker = L.marker([lati, logi]).addTo(map);
+
+map.on('click', function(e) {
+  var popup = L.popup().setLatLng(e.latlng)
+      .setContent(e.latlng.lat.toFixed(5)+", "+e.latlng.lng.toFixed(5))
+      .openOn(map);
+});
+
+// MERIDIANO ------------------
+
+var pointA = new L.LatLng(90, 0);
+var pointB = new L.LatLng(-90, 0);
+var pointList = [pointA, pointB];
+
+var firstpolyline = new L.Polyline(pointList, {
+    color: 'red',
+    weight: 3,
+    opacity: 0.5,
+    smoothFactor: 1
+});
+firstpolyline.addTo(map);
+
+// ECUADOR ]]]]]]]]]]]]]]]]]]]]]]]]]]]
+
+var pointEA = new L.LatLng(-0, -180);
+var pointEB = new L.LatLng(0, 180);
+var pointListE = [pointEA, pointEB];
+
+var elEcuador = new L.Polyline(pointListE, {
+    color: 'red',
+    weight: 3,
+    opacity: 0.5,
+    smoothFactor: 1
+});
+elEcuador.addTo(map);
+
+// nidos ----
+
+var deadline = 'Oct 5 2017 0:00:00 GMT';
+if (deadline == '') { deadline = base_deadline; }
+var date_clock = get_recurring_week_day_v2(deadline, 2);
+var timee = Date.parse(date_clock);
+// time nidos---------------------
+// Nidos Remaining______________________
+function getTimeRemaining(endtime){
+          var t = Date.parse(endtime) - Date.parse(new Date());
+          var seconds = Math.floor( (t/1000) % 60 );
+          var minutes = Math.floor( (t/1000/60) % 60 );
+          var hours = Math.floor( (t/(1000*60*60)) % 24 );
+          var days = Math.floor( t/(1000*60*60*24) );
+          return {
+            'total': t,
+            'days': days,
+            'hours': hours,
+            'minutes': minutes,
+            'seconds': seconds
+          };
+        }
+function get_recurring_week_day_v2(start_day, week_skip, count_today) {
+  var input_date = new Date(start_day); //alert(input_date);
+  var today = new Date(); //alert(today); //Get todays date
+  var days = (week_skip * 7);
+  var temp_date = new Date(input_date);
+  temp_date.setDate(temp_date.getDate() + days); //alert(temp_date);
+  while (temp_date < today) { 
+    temp_date.setDate(temp_date.getDate() + days);
+  }
+  return temp_date;
+}
+function calculateRemainingTime(element) {
+  let days, hours, minutes, seconds;
+  
+  element = new Date(element).getTime();
+  
+  if (isNaN(element)) { return; }
+  
+  setInterval(calculate, 1000);
+  
+  function calculate() {
+    let startDate = new Date();
+    startDate = startDate.getTime();
+    
+    let timeRemaining = parseInt((element - startDate) / 1000);
+    
+    if (timeRemaining >= 0) {
+      days = parseInt(timeRemaining / 86400);
+      timeRemaining = (timeRemaining % 86400);
+      
+      hours = parseInt(timeRemaining / 3600);
+      timeRemaining = (timeRemaining % 3600);
+      
+      minutes = parseInt(timeRemaining / 60);
+      timeRemaining = (timeRemaining % 60);
+      
+      seconds = parseInt(timeRemaining);
+      var ds = parseInt(days, 10);
+      var hr = ("0" + hours).slice(-2);
+      var ms = ("0" + minutes).slice(-2);
+      var sd = ("0" + seconds).slice(-2);
+     $(".remainingtext").html(ds+ "d " +hr+ "h " +ms+ ":" +sd);
+    } else { return; }
+  }
+}
+function updateTime() {
+    //deleteDespawnedPokemon();
+    $(".remainingtext, .remainingtext-tooltip").each(function() {
+        calculateRemainingTime(date_clock);
+    });
+}
+setInterval(updateTime, 1000);
+
+
+// pokeSpawn ------------------------------
+// https://docs.google.com/spreadsheets/d/1NewJUeqgSRSu4kodHbodlggMjhI-0IYNYX4tJUdO58A/edit#gid=0
+var code = "1NewJUeqgSRSu4kodHbodlggMjhI-0IYNYX4tJUdO58A";
+        Tabletop.init({
+        key: code,
+        callback: function(sheet, tabletop){
+ // NIDOS ------------------ 
+  $.each( tabletop.sheets("nidosMasnou").all(), function(i, nidito) {
+        
+        if (nidito.iconori === "poke") {
+          icon = L.ExtraMarkers.icon({
+            icon: "",number:'P',markerColor: "transparent",shape: "square",prefix: "fa",
+            innerHTML:'<img class="pokenido" src="https://fefroyo.github.io/pokeHome-icons/icons/poke_capture_0'+nidito.icon+'_000_mf_n_00000000_f_n.png" />' +
+            '<div class="remainingtext" id="expire" data-expire="123456"></div>'
+          });
+        };
+    
+      //var loc = [nidito["latitude"].replace(',','.'), nidito["longitude"].replace(',','.')];
+      var loc = new L.latLng(nidito.latitude, nidito.longitude);
+        if (nidito.iconori === "poke") {
+          marker = new L.Marker(new L.latLng(loc), {title: nidito.nombre, icon: icon});
+        };
+        marker.bindPopup("<h2>Nido de: <strong style='color: #84b819'>" + nidito.nombre + "</strong> #"+nidito.icon+"</h2>" +
+          " <h3><a href='http://maps.google.com/maps?q=" +nidito["latitude"]+', '+nidito["longitude"]+ "'>" +nidito["latitude"]+', '+nidito["longitude"]+ "</a></h3>" +
+          '<div id="infoboxpic"><div id="infoboxpicin"><div id="infoboxpicimg" style="background-image: url(https://fefroyo.github.io/pokeHome-icons/icons/poke_capture_0'+nidito.imagen+'_000_mf_n_00000000_f_n.png);"></div></div></div>').addTo(map);
+      
+        })
+    },
+    wanted: [ "nidosMasnou" ],
+    debug: true
+});
+</script>
+</body>
+</html>
