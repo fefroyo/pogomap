@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <!-- Leaflet's CSS -->
+   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+   integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+   crossorigin=""/>
+   <!-- Leaflet's JS -->
+   <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+   integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+   crossorigin=""></script>
+
+<!-- LEAFLET POLILINEMEASURE -->
+<link rel="stylesheet" href="https://ppete2.github.io/Leaflet.PolylineMeasure/Leaflet.PolylineMeasure.css" />
+<script src="https://ppete2.github.io/Leaflet.PolylineMeasure/Leaflet.PolylineMeasure.js"></script>
+<style>
+html, body, #map {height:100%;width:100%;padding:0px;margin:0px;}
+.leaflet-popup { width: 201px!important;}
+</style>
+</head>
+
+<body>
+
+	<div id="map"></div>
+
+<script>
+var lati = '41.49512'; // 41.49512, 2.36385
+var logi = '2.36385';
+
+var map = L.map('map').setView([lati, logi], 13);
+
+L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+		subdomains:['mt0','mt1','mt2','mt3']
+}).addTo(map);
+
+//mesures
+L.control.polylineMeasure().addTo(map);
+
+var marker = L.marker([lati, logi]).addTo(map);
+</script>
+</body>
+</html>
