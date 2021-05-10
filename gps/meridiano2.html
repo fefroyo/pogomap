@@ -1,0 +1,153 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <!-- Leaflet's CSS -->
+   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+   integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
+   crossorigin=""/>
+   <!-- Leaflet's JS -->
+   <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+   integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+   crossorigin=""></script>
+  
+<!-- extramarkers -->
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.10.2/css/all.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-extra-markers@1.0.6/dist/css/leaflet.extra-markers.min.css">
+
+<!-- LOCATE control -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
+  
+<style>
+html, body, #map {height:100%;width:100%;padding:0px;margin:0px;}
+/*.leaflet-popup { width: 201px!important;}*/
+.esquina {
+  position: fixed;
+  top: 10px;
+  right: 0px;
+  width: 300px;
+  height: 30px;
+  z-index: 1000;
+}
+</style>
+</head>
+
+<body>
+
+<div class="esquina">
+  <label for="latlongi">Coords: </label>
+  <input type="text" name="latlongi" id="latlongi" />
+  <input type="button" onclick="zoomTo2()" value="GO1" /><br><br>
+  <label for="lati">Latid: </label>
+  <input type="text" name="lati" id="lat" /><br>
+  <label for="longi">Long:</label>
+  <input type="text" name="longi" id="lng" />
+  <input type="button" onclick="zoomTo()" value="GO 2" />
+</div>
+  
+  <div id="map"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/leaflet-extra-markers@1.0.6/src/assets/js/leaflet.extra-markers.min.js"></script>
+<script>
+var lati = '41.49512'; // 41.49512, 2.36385
+var logi = '2.36385';
+
+// Greenwich - https://en.wikipedia.org/wiki/Prime_meridian
+
+// Longitude of Greenwich: -0.0076589 Latitude of Greenwich: 51.4825766
+
+var map = L.map('map').setView([41.41, 0], 8);
+L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+    subdomains:['mt0','mt1','mt2','mt3']
+}).addTo(map);
+
+// var marker = L.marker([lati, logi]).addTo(map);
+  
+L.control.locate().addTo(map);
+
+map.on('click', function(e) {
+  var popup = L.popup().setLatLng(e.latlng)
+      .setContent(e.latlng.lat.toFixed(5)+", "+e.latlng.lng.toFixed(5))
+      .openOn(map);
+});
+  
+/// COORDS SEARCH
+function zoomTo() {
+        var lat = document.getElementById("lat").value;
+        var lng = document.getElementById("lng").value;
+    
+    map.panTo(new L.LatLng(lat, lng));
+
+    var marker = new L.Marker(new L.LatLng(lat, lng) );
+    marker.bindPopup('coords: '+ lat + ', '+ lng ).addTo(map).openPopup();
+    }
+
+function zoomTo2() {
+  var latlong = document.getElementById("latlongi").value;
+
+  var texto = latlong.split(',');
+  var lati = texto[0];
+  var long = texto[1];
+
+  map.panTo(new L.LatLng(lati,long));
+  
+  var marker2 = new L.Marker(new L.LatLng(lati,long) );
+  marker2.bindPopup('coords: '+ lati + ', '+ long ).addTo(map).openPopup();
+}
+//// fin coords
+  
+// location
+  // locate mobile-------------------------
+
+map.locate({setView: true, maxZoom: 16});
+
+function onLocationFound(e) {
+
+let iconloc = L.ExtraMarkers.icon({
+    icon: "fa-dice-d6",markerColor: "green",shape: "square", prefix: "fas"
+});
+
+let markloc = L.marker(e.latlng, {icon: iconloc}).addTo(map);
+    markloc.bindPopup("<h3><a href='http://maps.google.com/maps?q=" + e.latlng + "'>AQUI: " + e.latlng + "</a> " 
+      + e.latlng.lat + "</h3>").openPopup();
+  // L.circle(e.latlng, radius).addTo(map);
+}
+function onLocationError(e) {
+  alert(e.message);
+}
+
+map.on('locationfound', onLocationFound);
+map.on('locationerror', onLocationError); 
+  
+// meridiano
+var pointA = new L.LatLng(90, 0);
+var pointB = new L.LatLng(-90, 0);
+var pointList = [pointA, pointB];
+
+var firstpolyline = new L.Polyline(pointList, {
+    color: 'green',
+    weight: 3,
+    opacity: 0.5,
+    smoothFactor: 1
+});
+firstpolyline.addTo(map);
+
+// ECUADOR - EQUADOR
+var pointEA = new L.LatLng(-0, -180);
+var pointEB = new L.LatLng(0, 180);
+var pointListE = [pointEA, pointEB];
+
+var elEcuador = new L.Polyline(pointListE, {
+    color: 'red',
+    weight: 3,
+    opacity: 0.5,
+    smoothFactor: 1
+});
+elEcuador.addTo(map);
+</script>
+</body>
+</html>
