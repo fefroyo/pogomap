@@ -112,8 +112,8 @@ let iconloc = L.ExtraMarkers.icon({
 });
 
 let markloc = L.marker(e.latlng, {icon: iconloc}).addTo(map);
-    markloc.bindPopup("<h3><a href='http://maps.google.com/maps?q=" + e.latlng + "'>AQUI: " + e.latlng + "</a> " 
-      + e.latlng.lat + "</h3>").openPopup();
+    markloc.bindPopup("<h3><a href='http://maps.google.com/maps?q=" + e.latlng.lat.toFixed(5)+", "+e.latlng.lng.toFixed(5) + "'>AQUI: " +
+                      e.latlng.lat.toFixed(5)+", "+e.latlng.lng.toFixed(5) + "</a></h3>").openPopup();
   // L.circle(e.latlng, radius).addTo(map);
 }
 function onLocationError(e) {
