@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>google mapkemon</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+/*#map {height: 100%;}*/
+#map {
+  /*margin-top:64px;*/
+  width: 640px;
+  height: 480px;
+}
+div#infoboxpic {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background-color: #8bd1e5;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 22px;
+    position: relative;
+    z-index: 8;
+}
+div#infoboxpicin {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-color: #fff;
+    position: relative;
+    top: 5px;
+    left: 5px;
+}
+div#infoboxpicimg {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    position: relative;
+    top: 0px;
+    left: 0px;
+    opacity: .85;
+}
+</style>
+</head>
+
+<body>
+
+    <div id="map"></div>
+
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBm5hiQC4t2wPhGoPKIlL-Vskn3HJHp1JU&callback=initMap"></script>
+<script src="./js/locations2.js"></script>
+<script>
+function initMap() {
+
+var map = new google.maps.Map(document.getElementById('map'), {
+  zoom: 16,
+  center: new google.maps.LatLng(41.558456, 2.37762),
+  //40.908417, -6.747603 -- la redonda
+  styles: [{"featureType":"administrative.locality","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"landscape","elementType":"all","stylers":[{"color":"#AFFFA0"}]},{"featureType":"poi","elementType":"all","stylers":[{"color":"#EAFFE5"}]},{"featureType":"poi.business","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"poi.government","elementType":"all","stylers":[{"visibility":"off"}]},{"featureType":"road","elementType":"geometry","stylers":[{"color":"#59A499"}]},{"featureType":"road","elementType":"geometry.stroke","stylers":[{"color":"#F0FF8D"},{"weight":2.2}]},{"featureType":"water","elementType":"all","stylers":[{"visibility":"on"},{"color":"#1A87D6"}]}],
+  mapTypeId: google.maps.MapTypeId.ROADMAP
+});
+
+var infowindow = new google.maps.InfoWindow();
+var image = 'pstop.png';
+var marker, i;
+
+    for (i = 0; i < paradas.length; i++) {  
+      marker = new google.maps.Marker({
+        position: new google.maps.LatLng(paradas[i].latitude, paradas[i].longitude),
+        icon: image,
+        //icon: paradas[i].imagen,
+        map: map
+      });
+
+      google.maps.event.addListener(marker, 'click', (function(marker, i) {
+        return function() {
+
+          var contentString = '<div id="content">'+
+            '<div id="siteNotice"></div>'+
+            '<h2><strong style="color: #84b819">' + paradas[i].nombre + '</strong>'+
+            '</h2><p>'+paradas[i].city+'</p>'+
+            '<div id="bodyContent">'+
+            "<h3><a href='http://maps.google.com/maps?q="+paradas[i].latitude+","+paradas[i].longitude+"'>" 
+            +paradas[i].latitude+', '+paradas[i].longitude+ "</a></h3>" +
+            '<div id="infoboxpic"><div id="infoboxpicin"><div id="infoboxpicimg" style="background-image: url('+paradas[i].imagen+');"></div></div></div>'+
+            '</div>'+
+            '</div>';
+          infowindow.setContent(contentString);
+          //infowindow.setContent(paradas[i].name);
+          infowindow.open(map, marker);
+        }
+      })(marker, i));
+    }
+
+}
+</script>
+</body>
+</html>
