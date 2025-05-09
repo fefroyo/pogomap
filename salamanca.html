@@ -4,16 +4,18 @@
    <meta charset="UTF-8">
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="apple-touch-icon" href="./icons/pstop.png">
-<link rel="shortcut icon" href="./icons/pstop.png">
+<!-- <link rel="apple-touch-icon" href="./icons/pstop.png">
+<link rel="shortcut icon" href="./icons/pstop.png"> -->
 
 <script src="https://unpkg.com/s2-geometry" crossorigin></script>
 <!-- Leaflet's CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@latest/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@latest/dist/leaflet.js"></script>
 <!-- leaflet search -->
-<script src='https://labs.easyblog.it/maps/leaflet-search/src/leaflet-search.js'></script>
-<link rel='stylesheet' href='https://labs.easyblog.it/maps/leaflet-search/src/leaflet-search.css'>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-search@latest/dist/leaflet-search.min.css" crossorigin />
+<script src="https://cdn.jsdelivr.net/npm/leaflet-search@latest/dist/leaflet-search.src.min.js"></script>
+<!-- <script src='https://labs.easyblog.it/maps/leaflet-search/src/leaflet-search.js'></script>
+<link rel='stylesheet' href='https://labs.easyblog.it/maps/leaflet-search/src/leaflet-search.css'> -->
 
 <!-- cluster CSS -->  
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.1.0/dist/MarkerCluster.css" />
@@ -21,15 +23,18 @@
 <!-- extramarkers -->
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-extra-markers@1.0.6/dist/css/leaflet.extra-markers.min.css">
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.6.3/tabletop.min.js'></script>
+<!-- jquery2 -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+<!-- <script src='https://cdnjs.cloudflare.com/ajax/libs/tabletop.js/1.6.2/tabletop.min.js'></script> -->
 <!-- control locate -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
 <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
 <!-- <script src='https://cdn.jsdelivr.net/npm/tabletop@1.6.2/src/tabletop.min.js'></script> -->
 <script src="https://cdn.jsdelivr.net/npm/leaflet-extra-markers@1.0.6/src/assets/js/leaflet.extra-markers.min.js"></script>
-<script src="https://unpkg.com/leaflet.markercluster@1.1.0/dist/leaflet.markercluster.js"></script> 
+<script src="https://unpkg.com/leaflet.markercluster@1.1.0/dist/leaflet.markercluster.js"></script>
+<!-- EASY BUTTON -->    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.css">
+<script src="https://cdn.jsdelivr.net/npm/leaflet-easybutton@2/src/easy-button.js"></script>
 
 
 <style>
@@ -130,27 +135,29 @@ div#infoboxpicimg {
   <div id="map"></div>
 
 <script>
-var lati = '40.90855';
-var logi = '-6.74772';
+var lati = '40.90855';var logi = '-6.74772';
 let ZoomMax = 20;
   
 var gymsM = new L.LayerGroup();
 var pokestopsM = new L.LayerGroup(); // L.markerClusterGroup();
 var nuevas = new L.LayerGroup();
+var pedir = new L.LayerGroup();
 var pedidas = new L.LayerGroup();
-var nidos = new L.LayerGroup();
 var LG_ContadorPG = new L.LayerGroup();
 
   
 var map = L.map('map', {
   maxZoom: ZoomMax,
   zoom: 10,
-  layers: [gymsM]
+  layers: [gymsM, pokestopsM,nuevas]
 }).setView([lati, logi], 17);
 
-var token = 'pk.eyJ1IjoiYmVydGYiLCJhIjoiY2piNDU5ZXdqMnM4ZDJ3cWsxazlxeWZxMyJ9.7Wgr37jGzWrjk6cqLcJRBQ';
-var mapboxUrl = 'https://api.mapbox.com/styles/v1/mapbox/streets-v10/tiles/{z}/{x}/{y}@2x?access_token=' + token;
+var mapboxUrl = 'https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiYmVydGYiLCJhIjoiY2piNDU5ZXdqMnM4ZDJ3cWsxazlxeWZxMyJ9.7Wgr37jGzWrjk6cqLcJRBQ';
 var calles1 = new L.TileLayer(mapboxUrl, {tileSize: 512,zoomOffset: -1}).addTo(map);
+
+// var calles1 = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+//   subdomains:['mt0','mt1','mt2','mt3']
+// }).addTo(map);
 
 var hibrido = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
     subdomains:['mt0','mt1','mt2','mt3'], maxZoom: 20 }).addTo(map);
@@ -175,14 +182,17 @@ var overlayMaps = {
     "Gym": gymsM,
     "Parada": pokestopsM,
     "EXgym": nuevas,
-    "Pokenido": nidos,  
+    "--": pedir,
     "pedir/pendiente": pedidas,
     "Total Po GY" : LG_ContadorPG
 };
-L.control.layers(null, overlayMaps).addTo(map);
+//L.control.layers(null, overlayMaps).addTo(map);
+ControlLayer=L.control.layers(null, overlayMaps).addTo(map);
 //// fin cAPAS
 
-   // logo pokemongo _______________________
+
+
+// logo pokemongo _______________________
 L.Control.Watermark = L.Control.extend({
     onAdd: function(map) {
         var img = L.DomUtil.create('img');
@@ -209,81 +219,8 @@ var firstpolyline = new L.Polyline(pointList, {
     smoothFactor: 1
 });
 firstpolyline.addTo(map);
+//////////////////////////
 
-  //  tiempo remaining
-// time nidos dias ---------------------
-var deadline = 'Oct 5 2017 0:00:00 GMT';
-if (deadline == '') { deadline = base_deadline; }
-var date_clock = get_recurring_week_day_v2(deadline, 2);
-var timee = Date.parse(date_clock);
-// time nidos---------------------
-// Nidos Remaining______________________
-function getTimeRemaining(endtime){
-          var t = Date.parse(endtime) - Date.parse(new Date());
-          var seconds = Math.floor( (t/1000) % 60 );
-          var minutes = Math.floor( (t/1000/60) % 60 );
-          var hours = Math.floor( (t/(1000*60*60)) % 24 );
-          var days = Math.floor( t/(1000*60*60*24) );
-          return {
-            'total': t,
-            'days': days,
-            'hours': hours,
-            'minutes': minutes,
-            'seconds': seconds
-          };
-        }
-function get_recurring_week_day_v2(start_day, week_skip, count_today) {
-  var input_date = new Date(start_day); //alert(input_date);
-  var today = new Date(); //alert(today); //Get todays date
-  var days = (week_skip * 7);
-  var temp_date = new Date(input_date);
-  temp_date.setDate(temp_date.getDate() + days); //alert(temp_date);
-  while (temp_date < today) { 
-    temp_date.setDate(temp_date.getDate() + days);
-  }
-  return temp_date;
-}
-function calculateRemainingTime(element) {
-  let days, hours, minutes, seconds;
-  
-  element = new Date(element).getTime();
-  
-  if (isNaN(element)) { return; }
-  
-  setInterval(calculate, 1000);
-  
-  function calculate() {
-    let startDate = new Date();
-    startDate = startDate.getTime();
-    
-    let timeRemaining = parseInt((element - startDate) / 1000);
-    
-    if (timeRemaining >= 0) {
-      days = parseInt(timeRemaining / 86400);
-      timeRemaining = (timeRemaining % 86400);
-      
-      hours = parseInt(timeRemaining / 3600);
-      timeRemaining = (timeRemaining % 3600);
-      
-      minutes = parseInt(timeRemaining / 60);
-      timeRemaining = (timeRemaining % 60);
-      
-      seconds = parseInt(timeRemaining);
-      var ds = parseInt(days, 10);
-      var hr = ("0" + hours).slice(-2);
-      var ms = ("0" + minutes).slice(-2);
-      var sd = ("0" + seconds).slice(-2);
-     $(".remainingtext").html(ds+ "d " +hr+ "h " +ms+ ":" +sd);
-    } else { return; }
-  }
-}
-function updateTime() {
-    //deleteDespawnedPokemon();
-    $(".remainingtext, .remainingtext-tooltip").each(function() {
-        calculateRemainingTime(date_clock);
-    });
-}
-setInterval(updateTime, 1000);
 
 // Cargar pokeparadas y gyms
 var MarkerNumCell14 = {
@@ -297,13 +234,18 @@ ArrayMarkerNumCell14 = [];  // Array de celdas 14 con numero de pokeparadas y gy
 var ContMarkerNumCell14 = 0;  // Contador de celdas con marcadores
 
 
-  // paradas y gyms
-var code = "1NewJUeqgSRSu4kodHbodlggMjhI-0IYNYX4tJUdO58A";
-        Tabletop.init({
-        key: code,
-        callback: function(sheet, tabletop){            
+// https://docs.google.com/spreadsheets/d/1NewJUeqgSRSu4kodHbodlggMjhI-0IYNYX4tJUdO58A/edit#gid=1225594638
+//let url = "https://sheet.best/api/sheets/3b884fdf-b1ad-4c9b-bece-43439f23bc7f";
+//   let url = 'https://sheet.best/api/sheets/f4f932e4-5b11-41ef-b235-d9eed9193022/tabs/avistamiento';
+let url = 'https://api.sheety.co/f0416d78dfbf33f6aea3920fde66e82c/mapas/avistamiento';
+// https://sheet.best/api/sheets/f4f932e4-5b11-41ef-b235-d9eed9193022
+
+fetch(url).then((response) => response.json()).then(data => {
+  
+var pokestop = data.avistamiento;
       
-      $.each( tabletop.sheets("avistamiento").all(), function(i, gim) {
+      $.each( pokestop, function(i, gim) {
+
         
         let icon = L.ExtraMarkers.icon({
           icon: "fa-number",number:'X',markerColor: "white",iconColor: 'black',shape: "circle"
@@ -319,10 +261,23 @@ var code = "1NewJUeqgSRSu4kodHbodlggMjhI-0IYNYX4tJUdO58A";
           });
         };
         if (gim.iconori === "pstop") {
-          icon = L.ExtraMarkers.icon({
-            icon: "fa-bullseye",markerColor: "blue",shape: "circle", prefix: "fas",
-            innerHTML:'<img class="circleimg" src="./icons/pstop1.png">'
-          });
+          // icon = L.ExtraMarkers.icon({
+          //   icon: "fa-bullseye",markerColor: "blue",shape: "circle", prefix: "fas",
+          //   innerHTML:'<img class="circleimg" src="./icons/pstop1.png">'
+          // });
+          icon = {
+              radius: 8,
+              stroke: true,
+              color: "#000000",
+              weight: 2,
+              opacity: 1,
+              fill: true,
+              fillColor: "#00AAff",
+              fillOpacity: 1,
+              interactive: true,
+              clickable: true,
+              pane: 'shadowPane'
+            };
         };
         if (gim.iconori === "pedida") {
           icon = L.ExtraMarkers.icon({
@@ -343,6 +298,7 @@ var code = "1NewJUeqgSRSu4kodHbodlggMjhI-0IYNYX4tJUdO58A";
           });
         };
     
+var marker;    
     //var loc = [gim["latitude"].replace(',','.'), gim["longitude"].replace(',','.')];
     var loc = new L.latLng(gim.latitude, gim.longitude);
 
@@ -354,7 +310,8 @@ var code = "1NewJUeqgSRSu4kodHbodlggMjhI-0IYNYX4tJUdO58A";
                         ContarPOGYC14(loc);
         };
         if (gim.iconori === "pstop") {
-          marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(pokestopsM);
+          marker = new L.CircleMarker(loc, icon ).bindTooltip('<b>'+gim.nombre+'</b>').addTo(pokestopsM);
+
           pokestopsM.addLayer(marker);
           map.addLayer(pokestopsM);
 
@@ -362,27 +319,31 @@ var code = "1NewJUeqgSRSu4kodHbodlggMjhI-0IYNYX4tJUdO58A";
         };
         if (gim.iconori === "gymex") {
           marker = new L.Marker(new L.latLng(loc), {title: gim.nombre, icon: icon}).addTo(nuevas);
-          map.addLayer(marker);
+
+          nuevas.addLayer(marker);
+          map.addLayer(nuevas);
+          //map.addLayer(marker);
 
                          ContarPOGYC14(loc);
         };
         if (gim.iconori === "pedida") {
           marker = new L.Marker(new L.latLng(loc), {icon: icon}).addTo(pedidas);
-          map.addLayer(marker);
+          // map.addLayer(marker);
         };
         if (gim.iconori === "pedir") {
           marker = new L.Marker(new L.latLng(loc), {icon: icon}).addTo(pedidas);
-          map.addLayer(marker);
+          // map.addLayer(marker);
         }; 
         if (gim.iconori === "mover") {
           marker = new L.Marker(new L.latLng(loc), {icon: icon}).addTo(pedidas);
-          map.addLayer(marker);
+          // map.addLayer(marker);
         };      
         marker.bindPopup("<h2><strong style='color: #84b819'>" + gim.nombre + "</strong></h2>" +
           " <h3><a href='http://maps.google.com/maps?q=" +gim["latitude"]+', '+gim["longitude"]+ "'>" +gim["latitude"]+', '+gim["longitude"]+ "</a></h3>" +
           "<div id='infoboxpic'><div id='infoboxpicin'><div id='infoboxpicimg' style='background-image: url(" +gim.imagen + ");'></div></div></div>");
 
-        })
+// fin excel
+
 
 /// contador de gyms y paradas /////
 let contador = 1;   // Para saber en que linea de la hoja de datos se encuentra el marcador
@@ -400,29 +361,30 @@ let itotalpg = L.ExtraMarkers.icon({
 
     marker = new L.Marker(loc, {icon: itotalpg} );
 
-var numerito = ArrayMarkerNumCell14[i].ContMark.toString();
+    var numerito = ArrayMarkerNumCell14[i].ContMark.toString();
 
-if (numerito < 2){
-    numerito = 1;
-}else if (numerito < 6){
-    numerito = 6 - numerito;
-}else if (numerito < 20){
-    numerito = 20 - numerito;
-}else {numerito = 0;};
+    if (numerito < 2){
+        numerito = 1;
+    }else if (numerito < 6){
+        numerito = 6 - numerito;
+    }else if (numerito < 20){
+        numerito = 20 - numerito;
+    }else {numerito = 0;};
 
-if (numerito > 0){
-    marker.bindPopup("<h2>Faltan = <b class='faltan'>"+
-                      numerito+"</b><br>para nuevo Gym</h2>"+
-                      "Nuevo gym  2a, 6a y 20a");
-}
-  marker.addTo(LG_ContadorPG);
+    if (numerito > 0){
+        marker.bindPopup("<h2>Faltan = <b class='faltan'>"+
+                          numerito+"</b><br>para nuevo Gym</h2>"+
+                          "Nuevo gym  2a, 6a y 20a");
+    }
+      marker.addTo(LG_ContadorPG);
 };
 
-          },
-          wanted: [ "avistamiento" ],
-          debug: true
+           })
+//           wanted: [ "avistamiento" ],
+//           debug: true
+// });
+    //}) // fin excel
 });
-
 
 // Contar Pokeparadas y Gyms en celdas 14
 function ContarPOGYC14(loc){
@@ -466,23 +428,7 @@ function midPoint(lat1,lon1,lat2,lon2){
 
   return new L.latLng ((lat3 * 180 / Math.PI),(lon3 * 180 / Math.PI));  // Devolvemos valores a grados
 };
-
-// buscador ___________________
-var controlSearch = new L.Control.Search({
-  position:'topleft',
-  layer: L.featureGroup([gymsM, pokestopsM,nuevas]),
-  initial: false,
-  zoom: 16,
-  marker: {
-    circle: {
-      radius: 60,
-      color: '#0a0',
-      opacity: 1
-    }
-  },
-  textPlaceholder: 'Pokeparada...'
-});
-map.addControl(controlSearch);
+///////////////////////////////
 
 
  /////// S2 cells
@@ -543,11 +489,23 @@ const updateMapGrid = () => {
   });
 };
  
+// buscador ___________________
 
-/// la redonda 
-
-// caño del arroyo
-// fuente del guijo 
+var controlSearch = new L.Control.Search({
+  position:'topleft',
+  layer: L.featureGroup([gymsM, pokestopsM, nuevas]),
+  initial: false,
+  zoom: 17,
+  // marker: {
+  //   circle: {
+  //     radius: 60,
+  //     color: '#0a0',
+  //     opacity: 1
+  //   }
+  // },
+  textPlaceholder: 'Pokeparada...'
+});
+map.addControl(controlSearch);
   
   // locate mobile /////-------------------------
 // map.locate({setView: true, maxZoom: 16});
@@ -572,7 +530,6 @@ const updateMapGrid = () => {
 // map.on('locationerror', onLocationError);
 
 L.control.locate({
-  //flyTo: false,
   keepCurrentZoomLevel: true,
   drawCircle: true,
   drawMarker: true,
@@ -583,20 +540,150 @@ L.control.locate({
 ///
   
  map.on('click', function(e){
-  var myMarca2 = new L.marker(e.latlng, {draggable: true}).addTo(map);
+  //var myMarca2 = new L.marker(e.latlng, {draggable: true}).addTo(map);
     var coord = e.latlng.toString().split(',');
     var lat = coord[0].split('(');
     var lng = coord[1].split(')');
-    myMarca2.bindPopup("<b>Lat: </b>" + lat[1]+"<br><b>Long: </b>" +lng[0]+
-        "<br><b>Coords:</b> "+ e.latlng.lat.toFixed(5)+","+e.latlng.lng.toFixed(5)).openPopup();
+    //myMarca2.bindPopup("<b>Lat: </b>" + lat[1]+"<br><b>Long: </b>" +lng[0]+
+    //"<br><b>Coords:</b> "+ e.latlng.lat.toFixed(5)+","+e.latlng.lng.toFixed(5)).openPopup();
+    
+    var popup = L.popup().setLatLng(e.latlng)
+       .setContent("<b>Lat: </b>" + lat[1]+"<br><b>Long: </b>" +lng[0]+
+        "<br><b>Coords:</b> "+ e.latlng.lat.toFixed(5)+","+e.latlng.lng.toFixed(5)
+         ).openOn(map);
   });
 
+/////////////////
+
+// var Circle40m = new L.circle ([0,0],    // Radio alcance jugador 40m
+//     {                  
+//     radius: 40,
+//           stroke: true,
+//           color: "#000000",
+//           weight: 1,
+//           opacity: 1,
+//           fill: true,
+//           fillColor: "#ffff00",
+//           fillOpacity: 0.2,
+//     interactive: false,
+//     clickable: false,
+//     });
+// var Circle80m = new L.circle ([0,0],    // Radio ampliado Covid alcance solo gyms 80m
+//     {                  
+//     radius: 80,
+//           stroke: true,
+//           color: "#000000",
+//           weight: 1,
+//           opacity: 1,
+//           fill: true,
+//           fillColor: "#ffff00",
+//           fillOpacity: 0.1,
+//     interactive: false,
+//     clickable: false,
+//     });
+// var CircleMJ = new L.CircleMarker([0,0],    // Circle jugador
+//     {
+//     radius: 6,
+//     stroke: true,
+//     color: "#000000",
+//     weight: 2,
+//     opacity: 1,
+//     fill: true,
+//     fillColor: "#FFFF00",
+//     fillOpacity: 1,
+//     draggable: true,
+//     interactive: true, 
+//     dragEnabled:true,
+//     clickable: true,
+//     });
+// // Control boton simula jugador con su radio de alcance ///////////////////////////////////////
+// var ButState = 0; // 1= activo 0 = inactivo
+// var Add40m = ((41/6378137) * (180/Math.PI));  //Sumamos 40 metros a latitude . 6378137 Earth’s radius, sphere
+// var Add80m = (((81-41)/6378137) * (180/Math.PI));   //Sumamos 80 metros a latitude . 6378137 Earth’s radius, sphere
+// var Label40m = new L.Circle([0.0],    //Etiqueta 40 metros
+//       {
+//       radius: 1,
+//       opacity: 0,
+//       interactive: false, 
+//       clickable: false,
+//       }).bindTooltip( "40m", { className: "Label_40m" , direction: 'center' , permanent: true , interactive: false , opacity: 1 , });
+
+// var Label80m = new L.Circle([0.0],    //Etiqueta 80 metros
+//       {
+//       radius: 1,
+//       opacity: 0,
+//       interactive: false, 
+//       clickable: false,
+//       }).bindTooltip( "80m", { className: "Label_40m" , direction: 'center' , permanent: true , interactive: false , opacity: 1 , });
+
+// var LocBuCo = new L.latLng (0,0);
+    
+// var ButtonJDControl = new L.easyButton('fa-street-view', function(btn, map)
+//   {
+//   if (ButState == 0 )
+//     {
+//     ButState = 1; //Activamos judador con radios
+//     LocBuCo.lat = map.getCenter().lat;
+//     LocBuCo.lng = map.getCenter().lng;
+//     CircleMJ.setLatLng([LocBuCo.lat,LocBuCo.lng]);
+//     Circle40m.setLatLng([LocBuCo.lat,LocBuCo.lng]);
+//     Circle80m.setLatLng([LocBuCo.lat,LocBuCo.lng]);
+//     LocBuCo.lat += Add40m; //Sumamos 40 metros a latitude . 6378137 Earth’s radius, sphere
+//     Label40m.setLatLng([LocBuCo.lat,LocBuCo.lng]);
+//     LocBuCo.lat += Add80m; //Sumamos 80 metros a latitude . 6378137 Earth’s radius, sphere
+//     Label80m.setLatLng([LocBuCo.lat,LocBuCo.lng]);
+//     Circle80m.addTo(map);
+//     Circle40m.addTo(map);
+//     CircleMJ.addTo(map);
+//     Label40m.addTo(map);
+//     Label80m.addTo(map);
+//     }
+//     else
+//     {
+//     ButState = 0; // Desactivamos jugador
+//     Circle40m.removeFrom(map);
+//     Circle80m.removeFrom(map);
+//     CircleMJ.removeFrom(map);
+//     Label40m.removeFrom(map);
+//     Label80m.removeFrom(map);
+//     };
+//   });
+
+    
+// CircleMJ.on       // Funccion mover jugador y radios en mapa.
+//   ({
+//         mousedown: function ()
+//     {
+//             map.dragging.disable();
+//             map.on('mousemove', function (e) 
+//       {
+//       LocBuCo.lat = e.latlng.lat;
+//       LocBuCo.lng = e.latlng.lng;
+//       Circle80m.setLatLng(e.latlng);
+//       Circle40m.setLatLng(e.latlng);
+//       CircleMJ.setLatLng(e.latlng);
+//       LocBuCo.lat += Add40m; //Sumamos 40 metros a latitude . 6378137 Earth’s radius, sphere
+//       Label40m.setLatLng([LocBuCo.lat,LocBuCo.lng]);
+//       LocBuCo.lat += Add80m; //Sumamos 80 metros a latitude . 6378137 Earth’s radius, sphere
+//       Label80m.setLatLng([LocBuCo.lat,LocBuCo.lng]);
+//                 });
+//             }
+//   }); 
+    
+// map.on('mouseup',function(e)    // Funcion soltar raton recuperamos movimiento mapa
+//        {
+//        map.dragging.enable();
+//        map.removeEventListener('mousemove');
+//        });
+    
+// map.addControl(ButtonJDControl);
+// map.addControl(controlSearch); 
   
 regionLayer = L.layerGroup();
 map.addLayer(regionLayer);
 map.on('moveend', updateMapGrid);
 updateTiles();
-updateMapGrid();  
+updateMapGrid(); 
 </script>
 </body>
 </html>
